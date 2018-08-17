@@ -1,0 +1,7 @@
+ssl:
+  truststorepass: itsasecret
+  keystorepass: itsasecret
+  keypass: itsasecret
+
+gateway:
+  id: FILL ME

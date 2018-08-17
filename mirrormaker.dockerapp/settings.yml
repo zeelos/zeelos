@@ -1,0 +1,10 @@
+ssl:
+  truststorepass: itsasecret
+  keystorepass: itsasecret
+  keypass: itsasecret
+
+gateway:
+  id: FILL ME
+
+mirrormaker:
+  heap_opts: -Xms128M -Xmx128M

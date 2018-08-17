@@ -1,0 +1,10 @@
+ssl:
+  truststorepass: itsasecret
+  keystorepass: itsasecret
+  keypass: itsasecret
+
+orientdb:
+  rootpass: secret
+  
+grafana:
+  rootpass: secret

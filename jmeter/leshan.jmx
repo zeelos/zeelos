@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="3.2" jmeter="3.2 r1790748">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <com.lwm2mjmeter.jmeter.protocol.lwm2m.LwM2mConfig guiclass="TestBeanGUI" testclass="com.lwm2mjmeter.jmeter.protocol.lwm2m.LwM2mConfig" testname="LwM2mConfig" enabled="true">
+        <stringProp name="objectId">3303</stringProp>
+        <stringProp name="instanceId">0</stringProp>
+        <stringProp name="resourceId">5700</stringProp>
+        <stringProp name="serverURI">coap://${__P(serverHost,localhost)}:${__P(serverPort,5683)}</stringProp>
+        <stringProp name="registrationPath">rd</stringProp>
+        <longProp name="registrationDuration">86400</longProp>
+        <boolProp name="registerAtStart">true</boolProp>
+        <boolProp name="derregisterAtStop">true</boolProp>
+        <stringProp name="resources">/3303/0/5700, /3303/0/5604</stringProp>
+      </com.lwm2mjmeter.jmeter.protocol.lwm2m.LwM2mConfig>
+      <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">${__P(threadsLoopCount,1000)}</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">${__P(threads,10)}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${__P(threadsRampUp,3)}</stringProp>
+        <longProp name="ThreadGroup.start_time">1485626635000</longProp>
+        <longProp name="ThreadGroup.end_time">1485626635000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Once Only Controller" enabled="true"/>
+        <hashTree>
+          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Simple Controller" enabled="true"/>
+          <hashTree>
+            <com.lwm2mjmeter.jmeter.protocol.lwm2m.NotifyObserversSampler guiclass="TestBeanGUI" testclass="com.lwm2mjmeter.jmeter.protocol.lwm2m.NotifyObserversSampler" testname="NotifyObserversSampler" enabled="true">
+              <stringProp name="serverURI">coap://${__P(serverHost,localhost)}:${__P(serverPort,5683)}</stringProp>
+              <stringProp name="objectId">3303</stringProp>
+              <stringProp name="resourceId">5700</stringProp>
+              <stringProp name="instanceId">0</stringProp>
+              <stringProp name="registrationPath">rd</stringProp>
+              <longProp name="registrationDuration">86400</longProp>
+              <boolProp name="registerAtStart">true</boolProp>
+              <boolProp name="derregisterAtStop">true</boolProp>
+            </com.lwm2mjmeter.jmeter.protocol.lwm2m.NotifyObserversSampler>
+            <hashTree/>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request" enabled="true">
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="format" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                    <stringProp name="Argument.value">text/plain</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                    <stringProp name="Argument.name">format</stringProp>
+                  </elementProp>
+                </collectionProp>
+              </elementProp>
+              <stringProp name="HTTPSampler.domain">${__P(serverHost,localhost)}</stringProp>
+              <stringProp name="HTTPSampler.port">${__P(restPort,8080)}</stringProp>
+              <stringProp name="HTTPSampler.protocol"></stringProp>
+              <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+              <stringProp name="HTTPSampler.path">/api/clients/jmeter-${__machineName}-${__threadNum}/3303/0/5700/observe</stringProp>
+              <stringProp name="HTTPSampler.method">POST</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+              <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+              <boolProp name="HTTPSampler.use_keepalive">false</boolProp>
+              <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+              <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+              <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+              <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            </HTTPSamplerProxy>
+            <hashTree/>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json;charset=utf-8</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+          </hashTree>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">${__P(threadDelayObserveReg,1000)}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Simple Controller" enabled="true"/>
+        <hashTree>
+          <SyncTimer guiclass="TestBeanGUI" testclass="SyncTimer" testname="Synchronizing Timer" enabled="true">
+            <intProp name="groupSize">0</intProp>
+            <longProp name="timeoutInMs">0</longProp>
+          </SyncTimer>
+          <hashTree/>
+          <com.lwm2mjmeter.jmeter.protocol.lwm2m.NotifyObserversSampler guiclass="TestBeanGUI" testclass="com.lwm2mjmeter.jmeter.protocol.lwm2m.NotifyObserversSampler" testname="NotifyObserversSampler" enabled="true">
+            <stringProp name="serverURI">coap://127.0.0.1:5683</stringProp>
+            <stringProp name="objectId">3303</stringProp>
+            <stringProp name="instanceId">0</stringProp>
+            <stringProp name="resourceId">5700</stringProp>
+            <stringProp name="registrationPath">rd</stringProp>
+            <longProp name="registrationDuration">86400</longProp>
+            <boolProp name="registerAtStart">true</boolProp>
+            <boolProp name="derregisterAtStop">true</boolProp>
+          </com.lwm2mjmeter.jmeter.protocol.lwm2m.NotifyObserversSampler>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">${__P(threadDelayObserveSend,1000)}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+    </hashTree>
+    <WorkBench guiclass="WorkBenchGui" testclass="WorkBench" testname="WorkBench" enabled="true">
+      <boolProp name="WorkBench.save">true</boolProp>
+    </WorkBench>
+    <hashTree/>
+  </hashTree>
+</jmeterTestPlan>

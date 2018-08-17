@@ -1,0 +1,301 @@
+{
+  "type": "record",
+  "name": "AvroRequest",
+  "namespace": "io.zeelos.leshan.avro.request",
+  "doc": "Represents the management request payload.",
+  "fields": [
+    {
+      "name": "serverId",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      }
+    },
+    {
+      "name": "ep",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      }
+    },
+    {
+      "name": "ticket",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      }
+    },
+    {
+      "name": "payload",
+      "type": {
+        "type": "record",
+        "name": "AvroRequestPayload",
+        "fields": [
+          {
+            "name": "kind",
+            "type": {
+              "type": "enum",
+              "name": "AvroRequestKind",
+              "doc": "Represents the request kind.",
+              "symbols": [
+                "read",
+                "write",
+                "writeAttributes",
+                "execute",
+                "observe",
+                "observeCancel",
+                "delete",
+                "discover",
+                "create"
+              ]
+            }
+          },
+          {
+            "name": "path",
+            "type": {
+              "type": "string",
+              "avro.java.string": "String"
+            }
+          },
+          {
+            "name": "contentFormat",
+            "type": {
+              "type": "enum",
+              "name": "AvroContentFormat",
+              "doc": "Represents the content format.",
+              "symbols": [
+                "TLV",
+                "JSON_CODE",
+                "TEXT_CODE",
+                "OPAQUE_CODE",
+                "LINK_CODE"
+              ]
+            }
+          },
+          {
+            "name": "body",
+            "type": [
+              "null",
+              {
+                "type": "record",
+                "name": "AvroCreateRequest",
+                "doc": "Represents a create request.",
+                "fields": [
+                  {
+                    "name": "instance",
+                    "type": {
+                      "type": "record",
+                      "name": "AvroInstanceResource",
+                      "namespace": "io.zeelos.leshan.avro.resource",
+                      "doc": "Represents the resource instance.",
+                      "fields": [
+                        {
+                          "name": "id",
+                          "type": "int"
+                        },
+                        {
+                          "name": "kind",
+                          "type": {
+                            "type": "enum",
+                            "name": "AvroResourceKind",
+                            "doc": "Represents the resource kind.",
+                            "symbols": [
+                              "OBJECT",
+                              "INSTANCE",
+                              "MULTIPLE_RESOURCE",
+                              "SINGLE_RESOURCE"
+                            ]
+                          }
+                        },
+                        {
+                          "name": "resources",
+                          "type": {
+                            "type": "array",
+                            "items": {
+                              "type": "record",
+                              "name": "AvroResource",
+                              "doc": "Represents a resource.",
+                              "fields": [
+                                {
+                                  "name": "id",
+                                  "type": "int"
+                                },
+                                {
+                                  "name": "path",
+                                  "type": {
+                                    "type": "string",
+                                    "avro.java.string": "String"
+                                  }
+                                },
+                                {
+                                  "name": "kind",
+                                  "type": "AvroResourceKind"
+                                },
+                                {
+                                  "name": "type",
+                                  "type": {
+                                    "type": "enum",
+                                    "name": "AvroType",
+                                    "doc": "Represents the resource type.",
+                                    "symbols": [
+                                      "STRING",
+                                      "FLOAT",
+                                      "INTEGER",
+                                      "BOOLEAN",
+                                      "OPAQUE",
+                                      "TIME",
+                                      "OBJLNK"
+                                    ]
+                                  }
+                                },
+                                {
+                                  "name": "value",
+                                  "type": [
+                                    {
+                                      "type": "string",
+                                      "avro.java.string": "String"
+                                    },
+                                    "double",
+                                    "long",
+                                    "boolean"
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "name": "multipleResources",
+                          "type": [
+                            "null",
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "record",
+                                "name": "AvroMultipleResource",
+                                "doc": "Represents a multiple resource.",
+                                "fields": [
+                                  {
+                                    "name": "id",
+                                    "type": "int"
+                                  },
+                                  {
+                                    "name": "path",
+                                    "type": {
+                                      "type": "string",
+                                      "avro.java.string": "String"
+                                    }
+                                  },
+                                  {
+                                    "name": "kind",
+                                    "type": "AvroResourceKind"
+                                  },
+                                  {
+                                    "name": "type",
+                                    "type": "AvroType"
+                                  },
+                                  {
+                                    "name": "resources",
+                                    "type": {
+                                      "type": "map",
+                                      "values": "AvroResource",
+                                      "avro.java.string": "String"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "default": null
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "record",
+                "name": "AvroExecuteRequest",
+                "doc": "Represents an execute request.",
+                "fields": [
+                  {
+                    "name": "parameters",
+                    "type": {
+                      "type": "string",
+                      "avro.java.string": "String"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "record",
+                "name": "AvroWriteAttributesRequest",
+                "doc": "Represents a write attributes request.",
+                "fields": [
+                  {
+                    "name": "observeSpec",
+                    "type": {
+                      "type": "string",
+                      "avro.java.string": "String"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "record",
+                "name": "AvroWriteRequest",
+                "doc": "Represents a write request.",
+                "fields": [
+                  {
+                    "name": "mode",
+                    "type": {
+                      "type": "enum",
+                      "name": "AvroWriteRequestMode",
+                      "doc": "Represents the write request mode.",
+                      "symbols": [
+                        "REPLACE",
+                        "UPDATE"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "node",
+                    "type": [
+                      {
+                        "type": "record",
+                        "name": "AvroObjectResource",
+                        "namespace": "io.zeelos.leshan.avro.resource",
+                        "doc": "Represents an object.",
+                        "fields": [
+                          {
+                            "name": "id",
+                            "type": "int"
+                          },
+                          {
+                            "name": "kind",
+                            "type": "AvroResourceKind"
+                          },
+                          {
+                            "name": "instances",
+                            "type": {
+                              "type": "array",
+                              "items": "AvroInstanceResource"
+                            }
+                          }
+                        ]
+                      },
+                      "io.zeelos.leshan.avro.resource.AvroInstanceResource",
+                      "io.zeelos.leshan.avro.resource.AvroResource"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "doc": "Represents the actual request body.",
+            "default": null
+          }
+        ]
+      }
+    }
+  ]
+}

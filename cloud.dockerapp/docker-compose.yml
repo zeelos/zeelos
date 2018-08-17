@@ -1,0 +1,355 @@
+# zeelos - cloud
+# MAINTAINER zeelos.io - https://zeelos.io
+
+version: '3.6'
+
+services:
+
+  zookeeper-cloud:
+    image: confluentinc/cp-zookeeper:5.0.0
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper/data
+      - zookeeper-log:/var/lib/zookeeper/log
+    environment:
+      - ZOOKEEPER_SERVER_ID=1
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+      - KAFKA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-zookeeper-config.yml
+      - KAFKA_JMX_HOSTNAME=localhost
+      - KAFKA_JMX_PORT=9580
+      - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
+                       -Dcom.sun.management.jmxremote.ssl=false
+    networks:
+      - cloudnet
+      - monnet
+    ports:
+      - 2181:2181
+      - 9580:9580
+    configs:
+      - source: kafka.jmx-exporter-javaagent-jar
+        target: /etc/kafka/prometheus/jmx_prometheus_javaagent.jar
+      - source: kafka.jmx-exporter-zookeeper-config
+        target: /etc/kafka/prometheus/jmx-exporter-zookeeper-config.yml
+    deploy:
+      placement:
+        constraints:
+          - node.labels.type == cloud
+    labels:
+      io.zeelos.app: "zeelos"
+      io.zeelos.role: "ZooKeeper - An open-source server which enables highly reliable distributed coordination"
+
+  kafka-cloud:
+    image: confluentinc/cp-kafka:5.0.0
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper-cloud:2181
+      - KAFKA_ADVERTISED_LISTENERS=SSL://kafka-cloud:9092
+      - KAFKA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-kafka-config.yml
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+      - KAFKA_JMX_HOSTNAME=localhost
+      - KAFKA_JMX_PORT=9581
+      - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
+                       -Dcom.sun.management.jmxremote.ssl=false
+      - KAFKA_INTER_BROKER_LISTENER_NAME=SSL
+      - KAFKA_SSL_KEYSTORE_FILENAME=kafka.kafka-cloud.keystore.jks
+      - KAFKA_SSL_KEYSTORE_CREDENTIALS=kafka-cloud_keystore_creds
+      - KAFKA_SSL_KEY_CREDENTIALS=kafka-cloud_sslkey_creds
+      - KAFKA_SSL_TRUSTSTORE_FILENAME=kafka.kafka-cloud.truststore.jks
+      - KAFKA_SSL_TRUSTSTORE_CREDENTIALS=kafka-cloud_truststore_creds
+      - KAFKA_SSL_CLIENT_AUTH=required
+      - KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM:HTTPS
+    configs:
+      - source: kafka.jmx-exporter-javaagent-jar
+        target: /etc/kafka/prometheus/jmx_prometheus_javaagent.jar
+      - source: kafka.jmx-exporter-kafka-config
+        target: /etc/kafka/prometheus/jmx-exporter-kafka-config.yml
+    secrets:
+      - source: kafka.kafka-cloud.keystore.jks
+        target: /etc/kafka/secrets/kafka.kafka-cloud.keystore.jks
+      - source: kafka-cloud_keystore_creds
+        target: /etc/kafka/secrets/kafka-cloud_keystore_creds
+      - source: kafka-cloud_sslkey_creds
+        target: /etc/kafka/secrets/kafka-cloud_sslkey_creds
+      - source: kafka.kafka-cloud.truststore.jks
+        target: /etc/kafka/secrets/kafka.kafka-cloud.truststore.jks
+      - source: kafka-cloud_truststore_creds
+        target: /etc/kafka/secrets/kafka-cloud_truststore_creds
+    networks:
+      - cloudnet
+      - monnet
+    ports:
+      - 9092:9092
+      - 9581:9581
+    deploy:
+      placement:
+        constraints:
+          - node.labels.type == cloud
+    labels:
+      io.zeelos.app: "zeelos"
+      io.zeelos.role: "Kafka - A distributed streaming platform"
+
+  schema-registry-cloud:
+    image: confluentinc/cp-schema-registry:5.0.0
+    environment:
+      - SCHEMA_REGISTRY_HOST_NAME=schema-registry-cloud
+      - SCHEMA_REGISTRY_LISTENERS=https://0.0.0.0:8081
+      - SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS=SSL://kafka-cloud:9092
+      - SCHEMA_REGISTRY_MASTER_ELIGIBILIY=true
+      - SCHEMA_REGISTRY_SCHEMA_REGISTRY_GROUP_ID=zeelos
+      - SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_METHODS=GET,POST,PUT,DELETE,OPTIONS
+      - SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_ORIGIN=*
+      - SCHEMA_REGISTRY_JMX_HOSTNAME=localhost
+      - SCHEMA_REGISTRY_JMX_PORT=9582
+      - SCHEMA_REGISTRY_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
+                                 -Dcom.sun.management.jmxremote.ssl=false
+      - SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL=SSL
+      - SCHEMA_REGISTRY_KAFKASTORE_SSL_TRUSTSTORE_LOCATION=/etc/kafka/secrets/kafka.schema-registry-cloud.truststore.jks
+      - SCHEMA_REGISTRY_KAFKASTORE_SSL_TRUSTSTORE_PASSWORD=${ssl.truststorepass}
+      - SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_LOCATION=/etc/kafka/secrets/kafka.schema-registry-cloud.keystore.jks
+      - SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
+      - SCHEMA_REGISTRY_KAFKASTORE_SSL_KEY_PASSWORD=${ssl.keypass}
+      - SCHEMA_REGISTRY_KAFKASTORE_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=HTTPS
+      - SCHEMA_REGISTRY_SSL_TRUSTSTORE_LOCATION=/etc/kafka/secrets/kafka.schema-registry-cloud.truststore.jks
+      - SCHEMA_REGISTRY_SSL_TRUSTSTORE_PASSWORD=${ssl.truststorepass}
+      - SCHEMA_REGISTRY_SSL_KEYSTORE_LOCATION=/etc/kafka/secrets/kafka.schema-registry-cloud.keystore.jks
+      - SCHEMA_REGISTRY_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
+      - SCHEMA_REGISTRY_SSL_KEY_PASSWORD=${ssl.keypass}
+      - SCHEMA_REGISTRY_SSL_CLIENT_AUTH=true
+      - SCHEMA_REGISTRY_SCHEMA_REGISTRY_INTER_INSTANCE_PROTOCOL=https
+      - SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL=INFO
+    secrets:
+      - source: kafka.schema-registry-cloud.keystore.jks
+        target: /etc/kafka/secrets/kafka.schema-registry-cloud.keystore.jks
+      - source: kafka.schema-registry-cloud.truststore.jks
+        target: /etc/kafka/secrets/kafka.schema-registry-cloud.truststore.jks
+    networks:
+      - cloudnet
+    ports:
+      - 8081:8081
+      - 9582:9582
+    deploy:
+      placement:
+        constraints:
+          - node.labels.type == cloud
+    labels:
+      io.zeelos.app: "zeelos"
+      io.zeelos.role: "Schema Registry - Schema registry for Apache Kafka"
+
+  kafka-rest-cloud:
+    image: confluentinc/cp-kafka-rest:5.0.0
+    environment:
+      - KAFKA_REST_HOST_NAME=kafka-rest-cloud
+      - KAFKA_REST_LISTENERS=https://0.0.0.0:8082
+      - KAFKA_REST_ZOOKEEPER_CONNECT=zookeeper-cloud:2181
+      - KAFKA_REST_BOOTSTRAP_SERVERS=kafka-cloud:9092
+      - KAFKA_REST_SCHEMA_REGISTRY_URL=https://schema-registry-cloud:8081
+      - KAFKA_REST_ACCESS_CONTROL_ALLOW_METHODS=GET,POST,PUT,DELETE,OPTIONS
+      - KAFKA_REST_ACCESS_CONTROL_ALLOW_ORIGIN=*
+      - KAFKA_REST_CONSUMER_REQUEST_TIMEOUT_MS=30000
+      - KAFKA_REST_JMX_HOSTNAME=localhost
+      - KAFKA_REST_JMX_PORT=9583
+      - KAFKA_REST_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
+                            -Dcom.sun.management.jmxremote.ssl=false
+      - KAFKA_REST_CLIENT_SECURITY_PROTOCOL=SSL
+      - KAFKA_REST_CLIENT_SSL_TRUSTSTORE_LOCATION=/etc/kafka/secrets/kafka.rest-cloud.truststore.jks
+      - KAFKA_REST_CLIENT_SSL_TRUSTSTORE_PASSWORD=${ssl.truststorepass}
+      - KAFKA_REST_CLIENT_SSL_KEYSTORE_LOCATION=/etc/kafka/secrets/kafka.rest-cloud.keystore.jks
+      - KAFKA_REST_CLIENT_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
+      - KAFKA_REST_CLIENT_SSL_KEY_PASSWORD=${ssl.keypass}
+      - KAFKA_REST_CLIENT_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=HTTPS
+      - KAFKA_REST_SSL_TRUSTSTORE_LOCATION=/etc/kafka/secrets/kafka.rest-cloud.truststore.jks
+      - KAFKA_REST_SSL_TRUSTSTORE_PASSWORD=${ssl.truststorepass}
+      - KAFKA_REST_SSL_KEYSTORE_LOCATION=/etc/kafka/secrets/kafka.rest-cloud.keystore.jks
+      - KAFKA_REST_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
+      - KAFKA_REST_SSL_KEY_PASSWORD=${ssl.keypass}
+      - KAFKA_REST_SSL_CLIENT_AUTH=true
+    secrets:
+      - source: kafka.rest-cloud.keystore.jks
+        target: /etc/kafka/secrets/kafka.rest-cloud.keystore.jks
+      - source: kafka.rest-cloud.truststore.jks
+        target: /etc/kafka/secrets/kafka.rest-cloud.truststore.jks
+    networks:
+      - cloudnet
+    ports:
+      - 8082:8082
+      - 9583:9583
+    deploy:
+      placement:
+        constraints:
+          - node.labels.type == cloud
+    labels:
+      io.zeelos.app: "zeelos"
+      io.zeelos.role: "Kafka REST Proxy - A RESTful interface to a Kafka cluster"
+
+  kafka-command-client:
+    image: confluentinc/cp-kafka-connect-base:5.0.0
+    environment:
+      - SCHEMA_REGISTRY_OPTS=-Djavax.net.ssl.trustStore=/etc/kafka/secrets/kafka.client-cloud.truststore.jks
+                             -Djavax.net.ssl.trustStorePassword=${ssl.truststorepass}
+                             -Djavax.net.ssl.keyStore=/etc/kafka/secrets/kafka.client-cloud.keystore.jks
+                             -Djavax.net.ssl.keyStorePassword=${ssl.keystorepass}
+    command: "bash -c -a 'tail -f /dev/null'"
+    secrets:
+      - source: kafka.client-cloud.keystore.jks
+        target: /etc/kafka/secrets/kafka.client-cloud.keystore.jks
+      - source: kafka.client-cloud.truststore.jks
+        target: /etc/kafka/secrets/kafka.client-cloud.truststore.jks
+      - source: client_security_cloud.properties
+        target: /etc/kafka/secrets/client_security_cloud.properties
+    networks:
+      - cloudnet
+    deploy:
+      placement:
+        constraints:
+          - node.labels.type == cloud
+    labels:
+      io.zeelos.app: "zeelos"
+      io.zeelos.role: "Kafka Command Client - An entry-point to issue commands against the Kafka Cloud Cluster"
+
+  kafka-exporter-cloud:
+    image: zeelos/kafka_exporter:v1.2.0
+    secrets:
+      - source: client-cloud.certificate.pem
+        target: /etc/kafka/secrets/client-cloud.certificate.pem
+      - source: client-cloud.key
+        target: /etc/kafka/secrets/client-cloud.key
+    networks:
+      - cloudnet
+      - monnet
+    command:
+      - '--kafka.server=kafka-cloud:9092'
+      - '--web.listen-address=:8080'
+      - '--tls.enabled'
+      - '--tls.cert-file=/etc/kafka/secrets/client-cloud.certificate.pem'
+      - '--tls.key-file=/etc/kafka/secrets/client-cloud.key'
+      - '--tls.insecure-skip-tls-verify'
+    deploy:
+      placement:
+        constraints:
+          - node.labels.type == cloud
+    labels:
+      io.zeelos.app: "zeelos"
+      io.zeelos.role: "Kafka Exporter - Kafka exporter for Prometheus (non-jmx)"
+
+  orientdb:
+    image: zeelos/orientdb:3.0.6-tp3-with-zeelosdb
+    volumes:
+      - orientdb-data:/orientdb/databases
+    environment:
+      - ORIENTDB_ROOT_PASSWORD=${orientdb.rootpass}
+      - JAVA_OPTS=-Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.local.only=false
+                  -Dcom.sun.management.jmxremote.rmi.port=9450 -Dcom.sun.management.jmxremote.port=9450
+                  -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
+                  -Dcom.sun.management.jmxremote.ssl=false
+      - ORIENTDB_SETTINGS=-Denvironment.dumpCfgAtStartup=true -Dnetwork.token.expireTimeout=10080 -Dnetwork.socketTimeout=15000
+    networks:
+      - cloudnet
+    ports:
+      - 2424:2424
+      - 2480:2480
+      - 9450:9450
+    deploy:
+      placement:
+        constraints:
+          - node.labels.type == cloud
+    labels:
+      io.zeelos.app: "zeelos"
+      io.zeelos.role: "OrientDB - Distributed Multi-Model and Graph Database"
+
+  influxdb:
+    image: zeelos/influxdb:1.6.1-with-zeelosdb
+    volumes:
+      - influxdb-data:/var/lib/influxdb
+    environment:
+      - INFLUXDB_HTTP_AUTH_ENABLED=true
+      - INFLUXDB_DATA_MAX_VALUES_PER_TAG=0
+      - INFLUXDB_DATA_MAX_SERIES_PER_DATABASE=0
+    networks:
+      - cloudnet
+    ports:
+      - 8086:8086
+    deploy:
+      placement:
+        constraints:
+          - node.labels.type == cloud
+    labels:
+      io.zeelos.app: "zeelos"
+      io.zeelos.role: "InfluxDB - The Platform for Time-Series Data"
+
+  grafana:
+    image: zeelos/grafana:5.2.2-influx-with-zeelosdb
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${grafana.rootpass}
+      - GF_INSTALL_PLUGINS=natel-discrete-panel
+    networks:
+      - cloudnet
+      - monnet
+    ports:
+      - 3000:3000
+    user: "472"
+    deploy:
+      placement:
+        constraints:
+          - node.labels.type == cloud
+    labels:
+      io.zeelos.app: "zeelos"
+      io.zeelos.role: "Grafana - Beautiful metric & analytic dashboards"
+
+configs:
+  kafka.jmx-exporter-javaagent-jar:
+    file: ./configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.3.1.jar
+  kafka.jmx-exporter-zookeeper-config:
+    file: ./configs/prometheus/exporters/kafka/jmx-exporter-zookeeper-config.yml
+  kafka.jmx-exporter-kafka-config:
+    file: ./configs/prometheus/exporters/kafka/jmx-exporter-kafka-config.yml
+
+secrets:
+  kafka.kafka-cloud.keystore.jks:
+    file: ./security/kafka.kafka-cloud.keystore.jks
+  kafka-cloud_keystore_creds:
+    file: ./security/kafka-cloud_keystore_creds
+  kafka-cloud_sslkey_creds:
+    file: ./security/kafka-cloud_sslkey_creds
+  kafka.kafka-cloud.truststore.jks:
+    file: ./security/kafka.kafka-cloud.truststore.jks
+  kafka-cloud_truststore_creds:
+    file: ./security/kafka-cloud_truststore_creds
+  kafka.schema-registry-cloud.keystore.jks:
+    file: ./security/kafka.schema-registry-cloud.keystore.jks
+  kafka.schema-registry-cloud.truststore.jks:
+    file: ./security/kafka.schema-registry-cloud.truststore.jks
+  kafka.rest-cloud.keystore.jks:
+    file: ./security/kafka.rest-cloud.keystore.jks
+  kafka.rest-cloud.truststore.jks:
+    file: ./security/kafka.rest-cloud.truststore.jks
+  kafka.client-cloud.keystore.jks:
+    file: ./security/kafka.client-cloud.keystore.jks
+  kafka.client-cloud.truststore.jks:
+    file: ./security/kafka.client-cloud.truststore.jks
+  client_security_cloud.properties:
+    file: ./security/client_security_cloud.properties
+  client-cloud.certificate.pem:
+    file: ./security/client-cloud.certificate.pem
+  client-cloud.key:
+    file: ./security/client-cloud.key
+
+volumes:
+  zookeeper-data:
+  zookeeper-log:
+  kafka-data:
+  orientdb-data:
+  influxdb-data:
+  grafana-data:
+
+networks:
+  monnet:
+    external: true
+    name: monnet
+  cloudnet:
+    external: true
+    name: cloudnet

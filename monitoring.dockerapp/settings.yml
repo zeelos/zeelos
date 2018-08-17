@@ -1,0 +1,2 @@
+prometheus:
+  retention_days: 365d
