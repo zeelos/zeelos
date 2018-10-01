@@ -235,7 +235,7 @@ services:
       io.zeelos.role: "Kafka Exporter - Kafka exporter for Prometheus (non-jmx)"
 
   orientdb:
-    image: zeelos/orientdb:3.0.7-tp3-with-zeelosdb
+    image: zeelos/orientdb:3.0.8-tp3-with-zeelosdb
     volumes:
       - orientdb-data:/orientdb/databases
     environment:
@@ -260,7 +260,7 @@ services:
       io.zeelos.role: "OrientDB - Distributed Multi-Model and Graph Database"
 
   influxdb:
-    image: zeelos/influxdb:1.6.2-with-zeelosdb
+    image: zeelos/influxdb:1.6.3-with-zeelosdb
     volumes:
       - influxdb-data:/var/lib/influxdb
     environment:
