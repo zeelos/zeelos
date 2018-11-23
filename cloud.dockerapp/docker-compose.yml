@@ -260,7 +260,7 @@ services:
       io.zeelos.role: "OrientDB - Distributed Multi-Model and Graph Database"
 
   influxdb:
-    image: zeelos/influxdb:1.7.0-with-zeelosdb
+    image: zeelos/influxdb:1.7.1-with-zeelosdb
     volumes:
       - influxdb-data:/var/lib/influxdb
     environment:
@@ -280,7 +280,7 @@ services:
       io.zeelos.role: "InfluxDB - The Platform for Time-Series Data"
 
   grafana:
-    image: zeelos/grafana:5.3.2-influx-with-zeelosdb
+    image: zeelos/grafana:5.3.4-influx-with-zeelosdb
     volumes:
       - grafana-data:/var/lib/grafana
     environment:
