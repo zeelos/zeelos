@@ -6,7 +6,7 @@ version: '3.6'
 services:
 
   zookeeper-cloud:
-    image: confluentinc/cp-zookeeper:5.0.0
+    image: ${zookeeper.image}:${zookeeper.version}
     volumes:
       - zookeeper-data:/var/lib/zookeeper/data
       - zookeeper-log:/var/lib/zookeeper/log
@@ -40,7 +40,7 @@ services:
       io.zeelos.role: "ZooKeeper - An open-source server which enables highly reliable distributed coordination"
 
   kafka-cloud:
-    image: confluentinc/cp-kafka:5.0.0
+    image: ${kafka.image}:${kafka.version}
     volumes:
       - kafka-data:/var/lib/kafka/data
     environment:
@@ -94,7 +94,7 @@ services:
       io.zeelos.role: "Kafka - A distributed streaming platform"
 
   schema-registry-cloud:
-    image: confluentinc/cp-schema-registry:5.0.0
+    image: ${schema.image}:${schema.version}
     environment:
       - SCHEMA_REGISTRY_HOST_NAME=schema-registry-cloud
       - SCHEMA_REGISTRY_LISTENERS=https://0.0.0.0:8081
@@ -142,7 +142,7 @@ services:
       io.zeelos.role: "Schema Registry - Schema registry for Apache Kafka"
 
   kafka-rest-cloud:
-    image: confluentinc/cp-kafka-rest:5.0.0
+    image: ${rest.image}:${rest.version}
     environment:
       - KAFKA_REST_HOST_NAME=kafka-rest-cloud
       - KAFKA_REST_LISTENERS=https://0.0.0.0:8082
@@ -189,7 +189,7 @@ services:
       io.zeelos.role: "Kafka REST Proxy - A RESTful interface to a Kafka cluster"
 
   kafka-command-client:
-    image: confluentinc/cp-kafka-connect-base:5.0.0
+    image: ${command.image}:${command.version}
     environment:
       - SCHEMA_REGISTRY_OPTS=-Djavax.net.ssl.trustStore=/etc/kafka/secrets/kafka.client-cloud.truststore.jks
                              -Djavax.net.ssl.trustStorePassword=${ssl.truststorepass}
