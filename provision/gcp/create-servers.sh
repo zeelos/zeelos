@@ -154,6 +154,21 @@ gcloud compute firewall-rules create "$network-allow-kafka-zookeeper" \
 --network "$network" \
 --allow tcp:8082,tcp:9583
 
+echo "creating firewall rule (allow:orientdb).."
+gcloud compute firewall-rules create "$network-allow-orientdb" \
+--network "$network" \
+--allow tcp:2424,tcp:2480,tcp:9450
+
+echo "creating firewall rule (allow:influxdb).."
+gcloud compute firewall-rules create "$network-allow-influxdb" \
+--network "$network" \
+--allow tcp:8086
+
+echo "creating firewall rule (allow:grafana).."
+gcloud compute firewall-rules create "$network-allow-grafana" \
+--network "$network" \
+--allow tcp:3000
+
 echo "creating route to VPN internal hosts.."
 gcloud compute routes create "$network-route-to-vpn-internal-hosts" \
 --destination-range="$ip_vpn_internal" \

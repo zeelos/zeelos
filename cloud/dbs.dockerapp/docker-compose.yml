@@ -1,0 +1,106 @@
+# zeelos - cloud
+# MAINTAINER zeelos.io - https://zeelos.io
+
+version: '3.6'
+
+services:
+
+  orientdb:
+    image: ${orientdb.image}:${orientdb.version}
+    volumes:
+      - orientdb-data:/orientdb/databases
+    environment:
+      - ORIENTDB_ROOT_PASSWORD=${orientdb.rootpass}
+      - JAVA_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
+                  -Dcom.sun.management.jmxremote.ssl=false
+                  -Djava.rmi.server.hostname=${project.name}-${project.region}-${project.zone}-worker-4
+                  -Dcom.sun.management.jmxremote.local.only=false
+                  -Dcom.sun.management.jmxremote.rmi.port=9450
+                  -Dcom.sun.management.jmxremote.port=9450
+      - ORIENTDB_SETTINGS=-Denvironment.dumpCfgAtStartup=true -Dnetwork.token.expireTimeout=10080 -Dnetwork.socketTimeout=15000
+    networks:
+      - cloudnet
+    ports:
+      - published: 2424
+        target: 2424
+        mode: host
+      - published: 2480
+        target: 2480
+        mode: host
+      - published: 9450
+        target: 9450
+        mode: host
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-4
+    labels:
+      io.zeelos.app: ${project.name}
+      io.zeelos.role: "OrientDB - Distributed Multi-Model and Graph Database"
+
+  influxdb:
+    image: ${influxdb.image}:${influxdb.version}
+    volumes:
+      - influxdb-data:/var/lib/influxdb
+    environment:
+      - INFLUXDB_HTTP_AUTH_ENABLED=true
+      - INFLUXDB_DATA_MAX_VALUES_PER_TAG=0
+      - INFLUXDB_DATA_MAX_SERIES_PER_DATABASE=0
+    networks:
+      - cloudnet
+    ports:
+      - published: 8086
+        target: 8086
+        mode: host
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-4
+    labels:
+      io.zeelos.app: ${project.name}
+      io.zeelos.role: "InfluxDB - The Platform for Time-Series Data"
+
+  grafana:
+    image: ${grafana.image}:${grafana.version}
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${grafana.rootpass}
+      - GF_INSTALL_PLUGINS=natel-discrete-panel
+    networks:
+      - cloudnet
+      - monnet
+    ports:
+      - published: 3000
+        target: 3000
+        mode: host
+    user: "472"
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-4
+    labels:
+      io.zeelos.app: ${project.name}
+      io.zeelos.role: "Grafana - Beautiful metric & analytic dashboards"
+
+volumes:
+  orientdb-data:
+    driver: rexray/gcepd
+    driver_opts:
+      size: 20
+  influxdb-data:
+    driver: rexray/gcepd
+    driver_opts:
+      size: 20
+  grafana-data:
+    driver: rexray/gcepd
+    driver_opts:
+      size: 10
+
+networks:
+  monnet:
+    external: true
+    name: monnet
+  cloudnet:
+    external: true
+    name: cloudnet

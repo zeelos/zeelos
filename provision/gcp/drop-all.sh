@@ -42,6 +42,15 @@ gcloud --quiet compute firewall-rules delete "$network-allow-portainer-ui"
 echo "deleting firewall rule (allow:portainer-agent).."
 gcloud --quiet compute firewall-rules delete "$network-allow-portainer-agent"
 
+echo "deleting firewall rule (allow:orientdb).."
+gcloud --quiet compute firewall-rules delete "$network-allow-orientdb"
+
+echo "deleting firewall rule (allow:influxdb).."
+gcloud --quiet compute firewall-rules delete "$network-allow-influxdb"
+
+echo "deleting firewall rule (allow:grafana).."
+gcloud --quiet compute firewall-rules delete "$network-allow-grafana"
+
 echo "deleting NAT router.."
 gcloud --quiet compute routers nats delete "$network-nat-config" --router "$network-nat-router"
 gcloud --quiet compute routers delete "$network-nat-router"

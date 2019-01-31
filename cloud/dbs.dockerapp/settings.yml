@@ -1,0 +1,18 @@
+project: 
+    name: zeelos
+    region: europe
+    zone: west3-swarm
+    
+orientdb:
+  image: zeelos/orientdb
+  version: 3.0.13-tp3-with-zeelosdb
+  rootpass: secret
+
+influxdb:
+  image: zeelos/influxdb
+  version: 1.7.3-with-zeelosdb
+  
+grafana:
+  image: zeelos/grafana
+  version: 5.4.3-influx-with-zeelosdb
+  rootpass: secret
