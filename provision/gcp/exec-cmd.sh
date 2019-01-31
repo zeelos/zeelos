@@ -4,13 +4,13 @@
 project="zeelos"
 
 region="europe-west3"
-zone="europe-west3-a"
+zone="a"
 
-network="$project-$region"
+network="$project-$region-$zone"
 ip_subnet="subnet-$network"
 ip_range="10.180.0.0/20"
 
-ip_vpn_internal="172.16.2.0/24"
+ip_vpn_internal="192.168.1.0/24"
 
 managers=3
 workers=4

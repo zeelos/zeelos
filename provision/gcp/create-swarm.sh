@@ -4,9 +4,9 @@
 project="zeelos"
 
 region="europe-west3"
-zone="europe-west3-a"
+zone="a"
 
-network="$project-$region"
+network="$project-$region-$zone"
 ip_subnet="subnet-$network"
 ip_range="10.180.0.0/20"
 

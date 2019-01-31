@@ -4,9 +4,9 @@
 project="zeelos"
 
 region="europe-west3"
-zone="europe-west3-a"
+zone="a"
 
-network="$project-$region"
+network="$project-$region-$zone"
 ip_subnet="subnet-$network"
 ip_range="10.180.0.0/20"
 
@@ -90,7 +90,6 @@ for id in $(seq 1 $workers); do
     --machine-type="$worker_machine_type" \
     --boot-disk-size=10GB \
     --tags=worker \
-    --can-ip-forward \
     --private-network-ip="$network-swarm-worker-ip-$id" \
     --network "$network" \
     --subnet "$ip_subnet" \
@@ -139,6 +138,21 @@ echo "creating firewall rule (allow:portainer-agent).."
 gcloud compute firewall-rules create "$network-allow-portainer-agent" \
 --network "$network" \
 --allow tcp:9001
+
+echo "creating firewall rule (allow:kafka-broker-zookeeper).."
+gcloud compute firewall-rules create "$network-allow-kafka-broker-zookeeper" \
+--network "$network" \
+--allow tcp:2181,tcp:9580,tcp:9092,tcp:9581
+
+echo "creating firewall rule (allow:kafka-schema-registry).."
+gcloud compute firewall-rules create "$network-allow-kafka-zookeeper" \
+--network "$network" \
+--allow tcp:8081,tcp:9582
+
+echo "creating firewall rule (allow:kafka-rest).."
+gcloud compute firewall-rules create "$network-allow-kafka-zookeeper" \
+--network "$network" \
+--allow tcp:8082,tcp:9583
 
 echo "creating route to VPN internal hosts.."
 gcloud compute routes create "$network-route-to-vpn-internal-hosts" \
