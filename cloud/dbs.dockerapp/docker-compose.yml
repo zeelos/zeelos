@@ -13,7 +13,7 @@ services:
       - ORIENTDB_ROOT_PASSWORD=${orientdb.rootpass}
       - JAVA_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                   -Dcom.sun.management.jmxremote.ssl=false
-                  -Djava.rmi.server.hostname=${project.name}-${project.region}-${project.zone}-worker-4
+                  -Djava.rmi.server.hostname=${project.name}-${project.region}-${project.zone}-worker-5
                   -Dcom.sun.management.jmxremote.local.only=false
                   -Dcom.sun.management.jmxremote.rmi.port=9450
                   -Dcom.sun.management.jmxremote.port=9450
@@ -33,7 +33,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-4
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-5
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "OrientDB - Distributed Multi-Model and Graph Database"
@@ -55,7 +55,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-4
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-5
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "InfluxDB - The Platform for Time-Series Data"
@@ -78,7 +78,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-4
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-5
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "Grafana - Beautiful metric & analytic dashboards"
