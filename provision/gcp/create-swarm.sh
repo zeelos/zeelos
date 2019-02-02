@@ -13,7 +13,7 @@ ip_range="10.180.0.0/20"
 ip_vpn_internal="192.168.1.0/24"
 
 managers=3
-workers=4
+workers=6
 manager_machine_type="n1-standard-1"
 worker_machine_type="n1-standard-1"
 bastion_machine_type="n1-highcpu-2"
