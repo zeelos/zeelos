@@ -1,3 +1,8 @@
+project: 
+    name: zeelos
+    region: europe
+    zone: west3-swarm
+
 ssl:
   truststorepass: itsasecret
   keystorepass: itsasecret

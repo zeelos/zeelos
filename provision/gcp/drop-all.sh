@@ -42,6 +42,18 @@ gcloud --quiet compute firewall-rules delete "$network-allow-portainer-ui"
 echo "deleting firewall rule (allow:portainer-agent).."
 gcloud --quiet compute firewall-rules delete "$network-allow-portainer-agent"
 
+echo "deleting firewall rule (allow:kafka-broker-zookeeper).."
+gcloud --quiet compute firewall-rules delete "$network-allow-kafka-broker-zookeeper"
+
+echo "deleting firewall rule (allow:kafka-schema-registry).."
+gcloud --quiet compute firewall-rules delete "$network-allow-kafka-schema-registry"
+
+echo "deleting firewall rule (allow:kafka-connect-influxdb).."
+gcloud --quiet compute firewall-rules delete "$network-allow-kafka-connect-influxdb"
+
+echo "deleting firewall rule (allow:kafka-connect-asset).."
+gcloud --quiet compute firewall-rules delete "$network-allow-kafka-connect-asset"
+
 echo "deleting firewall rule (allow:orientdb).."
 gcloud --quiet compute firewall-rules delete "$network-allow-orientdb"
 

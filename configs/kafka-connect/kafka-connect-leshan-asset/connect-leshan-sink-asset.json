@@ -8,7 +8,7 @@
     "tinkerpop3.password": "secret",
     "key.converter": "org.apache.kafka.connect.storage.StringConverter",
     "value.converter": "io.confluent.connect.avro.AvroConverter",
-    "value.converter.schema.registry.url": "https://schema-registry-cloud:8081"
+    "value.converter.schema.registry.url": "https://schema-registry-1:8081"
   },
   "name": "GATEWAY_ID_leshan_asset_sink"
 }
