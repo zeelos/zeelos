@@ -149,6 +149,11 @@ gcloud compute firewall-rules create "$network-allow-kafka-schema-registry" \
 --network "$network" \
 --allow tcp:8081,tcp:9582
 
+echo "creating firewall rule (allow:kafka-rest).."
+gcloud compute firewall-rules create "$network-allow-kafka-rest" \
+--network "$network" \
+--allow tcp:8082,tcp:9583
+
 echo "creating firewall rule (allow:kafka-connect-influxdb).."
 gcloud compute firewall-rules create "$network-allow-kafka-connect-influxdb" \
 --network "$network" \

@@ -48,6 +48,9 @@ gcloud --quiet compute firewall-rules delete "$network-allow-kafka-broker-zookee
 echo "deleting firewall rule (allow:kafka-schema-registry).."
 gcloud --quiet compute firewall-rules delete "$network-allow-kafka-schema-registry"
 
+echo "deleting firewall rule (allow:kafka-rest).."
+gcloud --quiet compute firewall-rules delete "$network-allow-kafka-rest"
+
 echo "deleting firewall rule (allow:kafka-connect-influxdb).."
 gcloud --quiet compute firewall-rules delete "$network-allow-kafka-connect-influxdb"
 
