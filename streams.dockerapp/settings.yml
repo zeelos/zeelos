@@ -1,0 +1,16 @@
+project: 
+    name: zeelos
+    region: europe
+    zone: west3-swarm
+
+ssl:
+  truststorepass: itsasecret
+  keystorepass: itsasecret
+  keypass: itsasecret
+  
+gateway:
+  id: FILL ME
+
+kstreams:
+  image: zeelos/kafka-streams-leshan
+  version: 0.3-SNAPSHOT
