@@ -6,21 +6,23 @@ version: '3.6'
 services:
 
   kafka-mirrormaker:
-    image: zeelos/kafka-mirrormaker:5.0.0
+    image: ${mirrormaker.image}:${mirrormaker.version}
     environment:
       - MIRRORMAKER_WHITE_LIST=^iot.${gateway.id}.((?!req).)*$$
       - MIRRORMAKER_ABORT_ON_SEND_FAILURE=true
       - MIRRORMAKER_OFFSET_COMMIT_INTERVAL=10000
       - MIRRORMAKER_NUM_STREAMS=1
-      - CONSUMER_BOOTSTRAP_SERVERS=kafka-gateway:9082
+      - CONSUMER_BOOTSTRAP_SERVERS=SSL://kafka-gateway:9082
       - CONSUMER_GROUP_ID=mirrormaker_cloud_${gateway.id}
       - CONSUMER_AUTO_OFFSET_RESET=earliest
-      - PRODUCER_BOOTSTRAP_SERVERS=kafka-cloud:9092
       - KAFKA_HEAP_OPTS=${mirrormaker.heap_opts}
-      - KAFKA_JMX_HOSTNAME=localhost
-      - KAFKA_JMX_PORT=9574
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
+                       -Djava.rmi.server.hostname=kafka-mirrormaker
+                       -Dcom.sun.management.jmxremote.local.only=false
+                       -Dcom.sun.management.jmxremote.rmi.port=9574
+                       -Dcom.sun.management.jmxremote.port=9574
+      - PRODUCER_BOOTSTRAP_SERVERS=SSL://kafka-cloud-1:9092,SSL://kafka-cloud-2:9092,SSL://kafka-cloud-3:9092
       - PRODUCER_COMPRESSION_TYPE=snappy
       - PRODUCER_SECURITY_PROTOCOL=SSL
       - PRODUCER_SSL_TRUSTSTORE_LOCATION=/etc/kafka/secrets/kafka.client-cloud.truststore.jks
@@ -28,6 +30,7 @@ services:
       - PRODUCER_SSL_KEYSTORE_LOCATION=/etc/kafka/secrets/kafka.client-cloud.keystore.jks
       - PRODUCER_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
       - PRODUCER_SSL_KEY_PASSWORD=${ssl.keypass}
+      - PRODUCER_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=
       - CONSUMER_SECURITY_PROTOCOL=SSL
       - CONSUMER_SSL_TRUSTSTORE_LOCATION=/etc/kafka/secrets/kafka.client-gateway.truststore.jks
       - CONSUMER_SSL_TRUSTSTORE_PASSWORD=${ssl.truststorepass}
@@ -48,14 +51,15 @@ services:
       - source: client_security_gateway.properties
         target: /etc/kafka/secrets/client_security_gateway.properties
     networks:
-      - gateway
       - cloudnet
-    # ports:
-    #   - 9574:9574
+    ports:
+      - published: 9574
+        target: 9574
+        mode: host
     deploy:
       placement:
         constraints:
-          - node.labels.type == cloud
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-4
     labels:
       io.zeelos.app: "zeelos"
       io.zeelos.role: "Kafka MirrorMaker - A stand-alone tool for copying data between two Apache Kafka clusters"
@@ -79,6 +83,3 @@ networks:
   cloudnet:
     external: true
     name: cloudnet
-  gateway:
-    external: true
-    name: edgenet_${gateway.id}

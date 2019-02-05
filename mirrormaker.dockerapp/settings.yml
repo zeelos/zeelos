@@ -1,3 +1,8 @@
+project: 
+    name: zeelos
+    region: europe
+    zone: west3-swarm
+
 ssl:
   truststorepass: itsasecret
   keystorepass: itsasecret
@@ -7,4 +12,6 @@ gateway:
   id: FILL ME
 
 mirrormaker:
+  image: zeelos/kafka-mirrormaker
+  version: 5.1.0
   heap_opts: -Xms128M -Xmx128M
