@@ -402,47 +402,47 @@ services:
 
 configs:
   kafka.jmx-exporter-javaagent-jar:
-    file: ./configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.3.1.jar
+    file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.3.1.jar
   kafka.jmx-exporter-zookeeper-config:
-    file: ./configs/prometheus/exporters/kafka/jmx-exporter-zookeeper-config.yml
+    file: ../configs/prometheus/exporters/kafka/jmx-exporter-zookeeper-config.yml
   kafka.jmx-exporter-kafka-config:
-    file: ./configs/prometheus/exporters/kafka/jmx-exporter-kafka-config.yml
+    file: ../configs/prometheus/exporters/kafka/jmx-exporter-kafka-config.yml
 
 secrets:
   kafka.kafka-gateway.keystore.jks:
-    file: ./security/kafka.kafka-gateway.keystore.jks
+    file: ../security/kafka.kafka-gateway.keystore.jks
   kafka-gateway_keystore_creds:
-    file: ./security/kafka-gateway_keystore_creds
+    file: ../security/kafka-gateway_keystore_creds
   kafka-gateway_sslkey_creds:
-    file: ./security/kafka-gateway_sslkey_creds
+    file: ../security/kafka-gateway_sslkey_creds
   kafka.kafka-gateway.truststore.jks:
-    file: ./security/kafka.kafka-gateway.truststore.jks
+    file: ../security/kafka.kafka-gateway.truststore.jks
   kafka-gateway_truststore_creds:
-    file: ./security/kafka-gateway_truststore_creds
+    file: ../security/kafka-gateway_truststore_creds
   kafka.schema-registry-gateway.keystore.jks:
-    file: ./security/kafka.schema-registry-gateway.keystore.jks
+    file: ../security/kafka.schema-registry-gateway.keystore.jks
   kafka.schema-registry-gateway.truststore.jks:
-    file: ./security/kafka.schema-registry-gateway.truststore.jks
+    file: ../security/kafka.schema-registry-gateway.truststore.jks
   kafka.rest-gateway.keystore.jks:
-    file: ./security/kafka.rest-gateway.keystore.jks
+    file: ../security/kafka.rest-gateway.keystore.jks
   kafka.rest-gateway.truststore.jks:
-    file: ./security/kafka.rest-gateway.truststore.jks
+    file: ../security/kafka.rest-gateway.truststore.jks
   kafka.client-gateway.keystore.jks:
-    file: ./security/kafka.client-gateway.keystore.jks
+    file: ../security/kafka.client-gateway.keystore.jks
   kafka.client-gateway.truststore.jks:
-    file: ./security/kafka.client-gateway.truststore.jks
+    file: ../security/kafka.client-gateway.truststore.jks
   kafka.client-cloud.keystore.jks:
-    file: ./security/kafka.client-cloud.keystore.jks
+    file: ../security/kafka.client-cloud.keystore.jks
   kafka.client-cloud.truststore.jks:
-    file: ./security/kafka.client-cloud.truststore.jks
+    file: ../security/kafka.client-cloud.truststore.jks
   client_security_gateway.properties:
-    file: ./security/client_security_gateway.properties
+    file: ../security/client_security_gateway.properties
   client_security_cloud.properties:
-    file: ./security/client_security_cloud.properties
+    file: ../security/client_security_cloud.properties
   client-gateway.certificate.pem:
-    file: ./security/client-gateway.certificate.pem
+    file: ../security/client-gateway.certificate.pem
   client-gateway.key:
-    file: ./security/client-gateway.key
+    file: ../security/client-gateway.key
 
 volumes:
   zookeeper-data:
