@@ -5,10 +5,10 @@ version: '3.6'
 
 services:
 
-  kafka-connect-influxdb:
+  connect-influxdb:
     image: zeelos/kafka-connect-leshan-influxdb:0.3-SNAPSHOT
     environment:
-      - CONNECT_BOOTSTRAP_SERVERS=SSL://kafka-1:9092,SSL://kafka-2:9092,SSL://kafka-3:9092
+      - CONNECT_BOOTSTRAP_SERVERS=SSL://kafka-cloud-1:9092,SSL://kafka-cloud-2:9092,SSL://kafka-cloud-3:9092
       - CONNECT_LISTENERS=https://0.0.0.0:8083
       - CONNECT_GROUP_ID=zeelos-connect-${gateway.id}-influxdb-group
       - CONNECT_CONFIG_STORAGE_TOPIC=zeelos-connect-${gateway.id}-influxdb-configs
@@ -19,25 +19,25 @@ services:
       - CONNECT_STATUS_STORAGE_TOPIC=zeelos-connect-${gateway.id}-influxdb-status
       - CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=3
       - CONNECT_KEY_CONVERTER=io.confluent.connect.avro.AvroConverter
-      - CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL=https://schema-registry-1:8081
+      - CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL=https://schema-registry-cloud:8081
       - CONNECT_VALUE_CONVERTER=io.confluent.connect.avro.AvroConverter
       - CONNECT_VALUE_CONVERTER_ENHANCED_AVRO_SCHEMA_SUPPORT=true
       - CONNECT_VALUE_CONVERTER_CONNECT_META_DATA=false
-      - CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL=https://schema-registry-1:8081
+      - CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL=https://schema-registry-cloud:8081
       - CONNECT_INTERNAL_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
       - CONNECT_INTERNAL_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
-      - CONNECT_REST_ADVERTISED_HOST_NAME=kafka-connect-influxdb
+      - CONNECT_REST_ADVERTISED_HOST_NAME=connect-influxdb
       - CONNECT_REST_ADVERTISED_PORT=8083
       - CONNECT_REST_ACCESS_CONTROL_ALLOW_METHODS=GET,POST,PUT,DELETE,OPTIONS
       - CONNECT_REST_ACCESS_CONTROL_ALLOW_ORIGIN=*
-      - CONNECT_ZOOKEEPER_CONNECT=zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      - CONNECT_ZOOKEEPER_CONNECT=zookeeper-cloud-1:2181,zookeeper-cloud-2:2181,zookeeper-cloud-3:2181
       - CONNECT_LOG4J_ROOT_LOGLEVEL=INFO
       - CONNECT_LOG4J_LOGGERS=com.datamountaineer=DEBUG
       - CONNECT_PLUGIN_PATH=/opt/connectors
       - KAFKA_HEAP_OPTS=-Xms128M -Xmx128M
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
-                       -Djava.rmi.server.hostname=${project.name}-${project.region}-${project.zone}-worker-6
+                       -Djava.rmi.server.hostname=connect-influxdb
                        -Dcom.sun.management.jmxremote.local.only=false
                        -Dcom.sun.management.jmxremote.rmi.port=9584
                        -Dcom.sun.management.jmxremote.port=9584
@@ -87,7 +87,7 @@ services:
         mode: ingress
       # - published: 9584
       #   target: 9584
-      #   mode: ingress
+      #   mode: host
     deploy:
       replicas: 1
       placement:
@@ -98,10 +98,10 @@ services:
       io.zeelos.role: "Connect - Your hub for connecting Apache Kafka to all your systems"
       io.zeelos.gatewayId: ${gateway.id}
 
-  kafka-connect-leshan-asset:
+  connect-leshan-asset:
     image: zeelos/kafka-connect-leshan-influxdb:0.3-SNAPSHOT
     environment:
-      - CONNECT_BOOTSTRAP_SERVERS=SSL://kafka-1:9092,SSL://kafka-2:9092,SSL://kafka-3:9092
+      - CONNECT_BOOTSTRAP_SERVERS=SSL://kafka-cloud-1:9092,SSL://kafka-cloud-2:9092,SSL://kafka-cloud-3:9092
       - CONNECT_LISTENERS=https://0.0.0.0:8084
       - CONNECT_GROUP_ID=zeelos-connect-${gateway.id}-leshan-asset-group
       - CONNECT_CONFIG_STORAGE_TOPIC=zeelos-connect-${gateway.id}-leshan-asset-configs
@@ -112,25 +112,25 @@ services:
       - CONNECT_STATUS_STORAGE_TOPIC=zeelos-connect-${gateway.id}-leshan-asset-status
       - CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=3
       - CONNECT_KEY_CONVERTER=io.confluent.connect.avro.AvroConverter
-      - CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL=https://schema-registry-1:8081
+      - CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL=https://schema-registry-cloud:8081
       - CONNECT_VALUE_CONVERTER=io.confluent.connect.avro.AvroConverter
       - CONNECT_VALUE_CONVERTER_ENHANCED_AVRO_SCHEMA_SUPPORT=true
       - CONNECT_VALUE_CONVERTER_CONNECT_META_DATA=false
-      - CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL=https://schema-registry-1:8081
+      - CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL=https://schema-registry-cloud:8081
       - CONNECT_INTERNAL_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
       - CONNECT_INTERNAL_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
-      - CONNECT_REST_ADVERTISED_HOST_NAME=kafka-connect-leshan-asset
+      - CONNECT_REST_ADVERTISED_HOST_NAME=connect-leshan-asset
       - CONNECT_REST_ADVERTISED_PORT=8084
       - CONNECT_REST_ACCESS_CONTROL_ALLOW_METHODS=GET,POST,PUT,DELETE,OPTIONS
       - CONNECT_REST_ACCESS_CONTROL_ALLOW_ORIGIN=*
-      - CONNECT_ZOOKEEPER_CONNECT=zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      - CONNECT_ZOOKEEPER_CONNECT=zookeeper-cloud-1:2181,zookeeper-cloud-2:2181,zookeeper-cloud-3:2181
       - CONNECT_LOG4J_ROOT_LOGLEVEL=INFO
       - CONNECT_LOG4J_LOGGERS=io.zeelos.leshan=DEBUG
       - CONNECT_PLUGIN_PATH=/opt/connectors
       - KAFKA_HEAP_OPTS=-Xms128M -Xmx128M
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
-                       -Djava.rmi.server.hostname=${project.name}-${project.region}-${project.zone}-worker-6
+                       -Djava.rmi.server.hostname=connect-leshan-asset
                        -Dcom.sun.management.jmxremote.local.only=false
                        -Dcom.sun.management.jmxremote.rmi.port=9585
                        -Dcom.sun.management.jmxremote.port=9585
