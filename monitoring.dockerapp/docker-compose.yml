@@ -6,7 +6,7 @@ version: '3.6'
 services:
 
   prometheus:
-    image: prom/prometheus:v2.3.2
+    image: prom/prometheus:v2.7.1
     volumes:
       - prometheus-data:/prometheus
     command:
@@ -18,7 +18,9 @@ services:
     networks:
       - monnet
     ports:
-      - 9091:9090
+      - published: 9091
+        target: 9090
+        mode: host
     configs:
       - source: prometheus_config
         target: /etc/prometheus/config.yml
@@ -27,37 +29,35 @@ services:
       - source: prometheus_node_rules
         target: /etc/prometheus/swarm_node.rules.yml
     deploy:
-      mode: replicated
-      replicas: 1
       placement:
         constraints:
-          - node.labels.type == cloud
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-5
     labels:
-      io.zeelos.app: "zeelos"
+      io.zeelos.app: ${project.name}
       io.zeelos.role: "Prometheus - From metrics to insight, Power your metrics and alerting with a leading open-source monitoring solution"
 
   alertmanager:
-    image: prom/alertmanager:v0.15.2
+    image: prom/alertmanager:v0.16.1
     volumes:
       - alertmanager-data:/alertmanager
     networks:
       - monnet
     ports:
-     - 9093:9093
+      - published: 9093
+        target: 9093
+        mode: host
     command:
       - '--config.file=/etc/alertmanager/config.yml'
       - '--storage.path=/alertmanager'
     deploy:
-      mode: replicated
-      replicas: 1
       placement:
         constraints:
-          - node.labels.type == cloud
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-5
     configs:
       - source: alertmanager.config
         target: /etc/alertmanager/config.yml
     labels:
-      io.zeelos.app: "zeelos"
+      io.zeelos.app: ${project.name}
       io.zeelos.role: "alertmanager - The Alertmanager handles alerts sent by client applications such as the Prometheus server"
 
   unsee:
@@ -65,17 +65,17 @@ services:
     networks:
       - monnet
     ports:
-     - 9094:8080
+      - published: 9094
+        target: 8080
+        mode: host
     environment:
       - "ALERTMANAGER_URIS=default:http://alertmanager:9093"
     deploy:
-      mode: replicated
-      replicas: 1
       placement:
         constraints:
-          - node.labels.type == cloud
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-5
     labels:
-      io.zeelos.app: "zeelos"
+      io.zeelos.app: ${project.name}
       io.zeelos.role: "unsee - Alert dashboard for Prometheus Alertmanager"
 
   cadvisor:
@@ -90,11 +90,13 @@ services:
     networks:
       - monnet
     ports:
-      - 8090:8080
+      - published: 8090
+        target: 8080
+        mode: host
     deploy:
       mode: global
     labels:
-      io.zeelos.app: "zeelos"
+      io.zeelos.app: ${project.name}
       io.zeelos.role: "cAdvisor - Analyzes resource usage and performance characteristics of running containers"
 
   node-exporter:
@@ -117,7 +119,7 @@ services:
     deploy:
       mode: global
     labels:
-      io.zeelos.app: "zeelos"
+      io.zeelos.app: ${project.name}
       io.zeelos.role: "node-exporter - Exporter for machine metrics"
 
   docker-exporter:
@@ -130,7 +132,7 @@ services:
     deploy:
       mode: global
     labels:
-      io.zeelos.app: "zeelos"
+      io.zeelos.app: ${project.name}
       io.zeelos.role: "docker-exporter - Provides the possibility of cat a TCP connection to a defined PORT"
 
 configs:
@@ -143,9 +145,16 @@ configs:
   alertmanager.config:
     file: ./configs/alertmanager/config.yml
 
-volumes:
+volumes:  
   prometheus-data:
+    driver: rexray/gcepd
+    driver_opts:
+      size: 20
+
   alertmanager-data:
+    driver: rexray/gcepd
+    driver_opts:
+      size: 10
 
 networks:
   monnet:

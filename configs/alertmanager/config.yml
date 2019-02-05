@@ -5,8 +5,8 @@ receivers:
     - name: 'slack'
       slack_configs:
           - send_resolved: true
-            api_url: 'https://hooks.slack.com/services/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'
+            api_url: 'https://hooks.slack.com/services/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'
             text: '{{ .CommonAnnotations.summary }} ---> {{ .CommonAnnotations.description }}'
             username: 'Prometheus - Alerts'
-            channel: '#alertmanager'
+            channel: '#zeelos-cloud'
             icon_emoji: ':dart:'

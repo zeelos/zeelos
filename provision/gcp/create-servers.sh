@@ -189,6 +189,16 @@ gcloud compute firewall-rules create "$network-allow-grafana" \
 --network "$network" \
 --allow tcp:3000
 
+echo "creating firewall rule (allow:docker-metrics).."
+gcloud compute firewall-rules create "$network-allow-docker-metrics" \
+--network "$network" \
+--allow tcp:9323
+
+echo "creating firewall rule (allow:prom-alertm-unsee-cadvisor).."
+gcloud compute firewall-rules create "$network-allow-prom-alertm-unsee-cadvisor" \
+--network "$network" \
+--allow tcp:9091,tcp:9093,tcp:9094,tcp:8090
+
 echo "creating route to VPN internal hosts.."
 gcloud compute routes create "$network-route-to-vpn-internal-hosts" \
 --destination-range="$ip_vpn_internal" \

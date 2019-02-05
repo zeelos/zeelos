@@ -42,44 +42,51 @@ scrape_configs:
       type: 'A'
       port: 9323
 
-  - job_name: 'kafka-cloud'
+  - job_name: 'kafka-cloud-1'
     dns_sd_configs:
     - names:
-      - 'tasks.kafka-cloud'
+      - 'tasks.kafka-cloud-1'
       type: 'A'
       port: 8080
 
-  - job_name: 'kafka-gateway'
+  - job_name: 'kafka-cloud-2'
     dns_sd_configs:
     - names:
-      - 'tasks.kafka-gateway'
+      - 'tasks.kafka-cloud-2'
       type: 'A'
       port: 8080
 
-  - job_name: 'zookeeper-cloud'
+  - job_name: 'kafka-cloud-3'
     dns_sd_configs:
     - names:
-      - 'tasks.zookeeper-cloud'
+      - 'tasks.kafka-cloud-3'
       type: 'A'
       port: 8080
 
-  - job_name: 'zookeeper-gateway'
+  - job_name: 'zookeeper-1'
     dns_sd_configs:
     - names:
-      - 'tasks.zookeeper-gateway'
+      - 'tasks.zookeeper-1'
       type: 'A'
       port: 8080
 
-  - job_name: 'kafka-exporter-cloud'
+  - job_name: 'zookeeper-2'
     dns_sd_configs:
     - names:
-      - 'tasks.kafka-exporter-cloud'
+      - 'tasks.zookeeper-2'
       type: 'A'
       port: 8080
 
-  - job_name: 'kafka-exporter-gateway'
+  - job_name: 'zookeeper-3'
     dns_sd_configs:
     - names:
-      - 'tasks.kafka-exporter-gateway'
+      - 'tasks.zookeeper-3'
+      type: 'A'
+      port: 8080
+
+  - job_name: 'kafka-exporter'
+    dns_sd_configs:
+    - names:
+      - 'tasks.kafka-exporter'
       type: 'A'
       port: 8080

@@ -72,6 +72,12 @@ gcloud --quiet compute firewall-rules delete "$network-allow-influxdb"
 echo "deleting firewall rule (allow:grafana).."
 gcloud --quiet compute firewall-rules delete "$network-allow-grafana"
 
+echo "deleting firewall rule (allow:docker-metrics).."
+gcloud --quiet compute firewall-rules delete "$network-allow-docker-metrics" 
+
+echo "deleting firewall rule (allow:prom-alertm-unsee-cadvisor).."
+gcloud --quiet compute firewall-rules delete "$network-allow-prom-alertm-unsee-cadvisor"
+
 echo "deleting NAT router.."
 gcloud --quiet compute routers nats delete "$network-nat-config" --router "$network-nat-router"
 gcloud --quiet compute routers delete "$network-nat-router"
