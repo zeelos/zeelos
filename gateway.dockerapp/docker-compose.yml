@@ -15,10 +15,12 @@ services:
       - ZOOKEEPER_CLIENT_PORT=2171
       - ZOOKEEPER_TICK_TIME=2000
       - KAFKA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-zookeeper-config.yml
-      - KAFKA_JMX_HOSTNAME=localhost
-      - KAFKA_JMX_PORT=9575
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
+                       -Djava.rmi.server.hostname=zookeeper-gateway
+                       -Dcom.sun.management.jmxremote.local.only=false
+                       -Dcom.sun.management.jmxremote.rmi.port=9575
+                       -Dcom.sun.management.jmxremote.port=9575
       - KAFKA_HEAP_OPTS=${zookeeper.heap_opts}
     networks:
       - gateway
@@ -38,9 +40,9 @@ services:
     deploy:
       placement:
         constraints:
-          - node.labels.type == ${gateway.id}
+          - node.role == manager
     labels:
-      io.zeelos.app: "zeelos"
+      io.zeelos.app: ${project.name}
       io.zeelos.role: "ZooKeeper - An open-source server which enables highly reliable distributed coordination"
       io.zeelos.gatewayId: ${gateway.id}
 
@@ -54,13 +56,21 @@ services:
       - KAFKA_ADVERTISED_LISTENERS=SSL://kafka-gateway:9082
       - KAFKA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-kafka-config.yml
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=1
+      - KAFKA_NUM_PARTITIONS=3
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_DELETE_TOPIC_ENABLE=true
       - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
       - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
       - KAFKA_HEAP_OPTS=${kafka.heap_opts}
-      - KAFKA_JMX_HOSTNAME=localhost
-      - KAFKA_JMX_PORT=9571
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
+                       -Djava.rmi.server.hostname=kafka-gateway
+                       -Dcom.sun.management.jmxremote.local.only=false
+                       -Dcom.sun.management.jmxremote.rmi.port=9571
+                       -Dcom.sun.management.jmxremote.port=9571
       - KAFKA_INTER_BROKER_LISTENER_NAME=SSL
       - KAFKA_SSL_KEYSTORE_FILENAME=kafka.kafka-gateway.keystore.jks
       - KAFKA_SSL_KEYSTORE_CREDENTIALS=kafka-gateway_keystore_creds
@@ -68,7 +78,6 @@ services:
       - KAFKA_SSL_TRUSTSTORE_FILENAME=kafka.kafka-gateway.truststore.jks
       - KAFKA_SSL_TRUSTSTORE_CREDENTIALS=kafka-gateway_truststore_creds
       - KAFKA_SSL_CLIENT_AUTH=required
-      - KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM:HTTPS
     configs:
       - source: kafka.jmx-exporter-javaagent-jar
         target: /etc/kafka/prometheus/jmx_prometheus_javaagent.jar
@@ -98,41 +107,43 @@ services:
     deploy:
       placement:
         constraints:
-          - node.labels.type == ${gateway.id}
+          - node.role == manager
     labels:
-      io.zeelos.app: "zeelos"
+      io.zeelos.app: ${project.name}
       io.zeelos.role: "Kafka - A distributed streaming platform"
       io.zeelos.gatewayId: ${gateway.id}
 
   schema-registry-gateway:
     image: ${schema.image}:${schema.version}
     environment:
-      - SCHEMA_REGISTRY_HOST_NAME=schema-registry-${gateway.id}
+      - SCHEMA_REGISTRY_HOST_NAME=schema-registry-gateway
       - SCHEMA_REGISTRY_LISTENERS=https://0.0.0.0:8071
-      - SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS=SSL://kafka-cloud:9092
+      - SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS=SSL://kafka-cloud-1:9092,SSL://kafka-cloud-2:9092,SSL://kafka-cloud-3:9092
       - SCHEMA_REGISTRY_MASTER_ELIGIBILIY=false
-      - SCHEMA_REGISTRY_SCHEMA_REGISTRY_GROUP_ID=zeelos
+      - SCHEMA_REGISTRY_INTER_INSTANCE_PROTOCOL=https
+      - SCHEMA_REGISTRY_SCHEMA_REGISTRY_GROUP_ID=${project.name}
       - SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_METHODS=GET,POST,PUT,DELETE,OPTIONS
       - SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_ORIGIN=*
       - SCHEMA_REGISTRY_HEAP_OPTS=${schema.heap_opts}
-      - SCHEMA_REGISTRY_JMX_HOSTNAME=localhost
-      - SCHEMA_REGISTRY_JMX_PORT=9572
       - SCHEMA_REGISTRY_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
-                                 -Dcom.sun.management.jmxremote.ssl=false
+                       -Dcom.sun.management.jmxremote.ssl=false
+                       -Djava.rmi.server.hostname=schema-registry-gateway
+                       -Dcom.sun.management.jmxremote.local.only=false
+                       -Dcom.sun.management.jmxremote.rmi.port=9572
+                       -Dcom.sun.management.jmxremote.port=9572
       - SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL=SSL
       - SCHEMA_REGISTRY_KAFKASTORE_SSL_TRUSTSTORE_LOCATION=/etc/kafka/secrets/kafka.schema-registry-gateway.truststore.jks
       - SCHEMA_REGISTRY_KAFKASTORE_SSL_TRUSTSTORE_PASSWORD=${ssl.truststorepass}
       - SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_LOCATION=/etc/kafka/secrets/kafka.schema-registry-gateway.keystore.jks
       - SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
       - SCHEMA_REGISTRY_KAFKASTORE_SSL_KEY_PASSWORD=${ssl.keypass}
-      - SCHEMA_REGISTRY_KAFKASTORE_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=HTTPS
+      - SCHEMA_REGISTRY_KAFKASTORE_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=
       - SCHEMA_REGISTRY_SSL_TRUSTSTORE_LOCATION=/etc/kafka/secrets/kafka.schema-registry-gateway.truststore.jks
       - SCHEMA_REGISTRY_SSL_TRUSTSTORE_PASSWORD=${ssl.truststorepass}
       - SCHEMA_REGISTRY_SSL_KEYSTORE_LOCATION=/etc/kafka/secrets/kafka.schema-registry-gateway.keystore.jks
       - SCHEMA_REGISTRY_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
       - SCHEMA_REGISTRY_SSL_KEY_PASSWORD=${ssl.keypass}
       - SCHEMA_REGISTRY_SSL_CLIENT_AUTH=true
-      - SCHEMA_REGISTRY_SCHEMA_REGISTRY_INTER_INSTANCE_PROTOCOL=https
       - SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL=INFO
     secrets:
       - source: kafka.schema-registry-gateway.keystore.jks
@@ -141,46 +152,46 @@ services:
         target: /etc/kafka/secrets/kafka.schema-registry-gateway.truststore.jks
     networks:
       - gateway
-      - cloudnet
     ports:
       - published: 8071
         target: 8071
-        mode: host
+        mode: ingress
       - published: 9572
         target: 9572
         mode: host
     deploy:
       placement:
         constraints:
-          - node.labels.type == ${gateway.id}
+          - node.role == manager
     labels:
-      io.zeelos.app: "zeelos"
+      io.zeelos.app: ${project.name}
       io.zeelos.role: "Schema Registry - Schema registry for Apache Kafka"
       io.zeelos.gatewayId: ${gateway.id}
 
-  kafka-rest-gateway:
+  rest-gateway:
     image: ${rest.image}:${rest.version}
     environment:
-      - KAFKA_REST_HOST_NAME=kafka-rest-gateway
+      - KAFKA_REST_HOST_NAME=rest-gateway
       - KAFKA_REST_LISTENERS=https://0.0.0.0:8072
       - KAFKA_REST_ZOOKEEPER_CONNECT=zookeeper-gateway:2171
-      - KAFKA_REST_BOOTSTRAP_SERVERS=kafka-gateway:9082
+      - KAFKA_REST_BOOTSTRAP_SERVERS=SSL://kafka-gateway:9082
       - KAFKA_REST_SCHEMA_REGISTRY_URL=https://schema-registry-gateway:8071
       - KAFKA_REST_ACCESS_CONTROL_ALLOW_METHODS=GET,POST,PUT,DELETE,OPTIONS
       - KAFKA_REST_ACCESS_CONTROL_ALLOW_ORIGIN=*
       - KAFKA_REST_CONSUMER_REQUEST_TIMEOUT_MS=30000
       - KAFKAREST_HEAP_OPTS=${rest.heap_opts}
-      - KAFKAREST_JMX_OPTS=-Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.local.only=false
-                           -Dcom.sun.management.jmxremote.rmi.port=9573 -Dcom.sun.management.jmxremote.port=9573
-                           -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
-                           -Dcom.sun.management.jmxremote.ssl=false
+      - KAFKAREST_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
+                       -Dcom.sun.management.jmxremote.ssl=false
+                       -Djava.rmi.server.hostname=rest-gateway
+                       -Dcom.sun.management.jmxremote.local.only=false
+                       -Dcom.sun.management.jmxremote.rmi.port=9573
+                       -Dcom.sun.management.jmxremote.port=9573
       - KAFKA_REST_CLIENT_SECURITY_PROTOCOL=SSL
       - KAFKA_REST_CLIENT_SSL_TRUSTSTORE_LOCATION=/etc/kafka/secrets/kafka.rest-gateway.truststore.jks
       - KAFKA_REST_CLIENT_SSL_TRUSTSTORE_PASSWORD=${ssl.truststorepass}
       - KAFKA_REST_CLIENT_SSL_KEYSTORE_LOCATION=/etc/kafka/secrets/kafka.rest-gateway.keystore.jks
       - KAFKA_REST_CLIENT_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
       - KAFKA_REST_CLIENT_SSL_KEY_PASSWORD=${ssl.keypass}
-      - KAFKA_REST_CLIENT_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=HTTPS
       - KAFKA_REST_SSL_TRUSTSTORE_LOCATION=/etc/kafka/secrets/kafka.rest-gateway.truststore.jks
       - KAFKA_REST_SSL_TRUSTSTORE_PASSWORD=${ssl.truststorepass}
       - KAFKA_REST_SSL_KEYSTORE_LOCATION=/etc/kafka/secrets/kafka.rest-gateway.keystore.jks
@@ -197,16 +208,16 @@ services:
     ports:
       - published: 8072
         target: 8072
-        mode: host
+        mode: ingress
       - published: 9573
         target: 9573
         mode: host
     deploy:
       placement:
         constraints:
-          - node.labels.type == ${gateway.id}
+          - node.role == manager
     labels:
-      io.zeelos.app: "zeelos"
+      io.zeelos.app: ${project.name}
       io.zeelos.role: "Kafka REST Proxy - A RESTful interface to a Kafka cluster"
       io.zeelos.gatewayId: ${gateway.id}
 
@@ -217,15 +228,17 @@ services:
       - MIRRORMAKER_ABORT_ON_SEND_FAILURE=true
       - MIRRORMAKER_OFFSET_COMMIT_INTERVAL=10000
       - MIRRORMAKER_NUM_STREAMS=1
-      - CONSUMER_BOOTSTRAP_SERVERS=kafka-cloud:9092
+      - CONSUMER_BOOTSTRAP_SERVERS=SSL://kafka-cloud-1:9092,SSL://kafka-cloud-2:9092,SSL://kafka-cloud-3:9092
       - CONSUMER_GROUP_ID=mirrormaker_edge_${gateway.id}
       - CONSUMER_AUTO_OFFSET_RESET=earliest
-      - PRODUCER_BOOTSTRAP_SERVERS=kafka-gateway:9082
+      - PRODUCER_BOOTSTRAP_SERVERS=SSL://kafka-gateway:9082
       - KAFKA_HEAP_OPTS=${mirrormaker.heap_opts}
-      - KAFKA_JMX_HOSTNAME=localhost
-      - KAFKA_JMX_PORT=9564
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
+                       -Djava.rmi.server.hostname=kafka-mirrormaker-gateway
+                       -Dcom.sun.management.jmxremote.local.only=false
+                       -Dcom.sun.management.jmxremote.rmi.port=9564
+                       -Dcom.sun.management.jmxremote.port=9564
       - PRODUCER_COMPRESSION_TYPE=${compression.type}
       - PRODUCER_SECURITY_PROTOCOL=SSL
       - PRODUCER_SSL_TRUSTSTORE_LOCATION=/etc/kafka/secrets/kafka.client-gateway.truststore.jks
@@ -239,6 +252,7 @@ services:
       - CONSUMER_SSL_KEYSTORE_LOCATION=/etc/kafka/secrets/kafka.client-cloud.keystore.jks
       - CONSUMER_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
       - CONSUMER_SSL_KEY_PASSWORD=${ssl.keypass}
+      - CONSUMER_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=
     secrets:
       - source: kafka.client-gateway.keystore.jks
         target: /etc/kafka/secrets/kafka.client-gateway.keystore.jks
@@ -250,7 +264,6 @@ services:
         target: /etc/kafka/secrets/kafka.client-cloud.truststore.jks
     networks:
       - gateway
-      - cloudnet
     ports:
       - published: 9564
         target: 9564
@@ -258,9 +271,9 @@ services:
     deploy:
       placement:
         constraints:
-          - node.labels.type == ${gateway.id}
+          - node.role == manager
     labels:
-      io.zeelos.app: "zeelos"
+      io.zeelos.app: ${project.name}
       io.zeelos.role: "Kafka MirrorMaker - A stand-alone tool for copying data between two Apache Kafka clusters"
       io.zeelos.gatewayId: ${gateway.id}
 
@@ -284,13 +297,12 @@ services:
         target: /etc/kafka/secrets/client_security_gateway.properties
     networks:
       - gateway
-      - cloudnet
     deploy:
       placement:
         constraints:
-          - node.labels.type == ${gateway.id}
+          - node.role == manager
     labels:
-      io.zeelos.app: "zeelos"
+      io.zeelos.app: ${project.name}
       io.zeelos.role: "Kafka Command Client - An entry-point to issue commands against the Kafka Cloud Cluster"
       io.zeelos.gatewayId: ${gateway.id}
 
@@ -314,9 +326,9 @@ services:
     deploy:
       placement:
         constraints:
-          - node.labels.type == ${gateway.id}
+          - node.role == manager
     labels:
-      io.zeelos.app: "zeelos"
+      io.zeelos.app: ${project.name}
       io.zeelos.role: "Kafka Exporter - Kafka exporter for Prometheus (non-jmx)"
       io.zeelos.gatewayId: ${gateway.id}
 
@@ -333,9 +345,9 @@ services:
       - KAFKA_PRODUCER_COMPRESSION_TYPE=${compression.type}
       - KAFKA_PRODUCER_BATCH_SIZE_CONFIG=16384
       - KAFKA_PRODUCER_LINGER_MS=0
-      - KAFKA_BOOTSTRAP_SERVER=kafka-gateway:9082
+      - KAFKA_BOOTSTRAP_SERVER=SSL://kafka-gateway:9082
       - KAFKA_SCHEMA_REGISTRY_URL=https://schema-registry-gateway:8071
-      - JAVA_OPTS=-Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.local.only=false
+      - JAVA_OPTS=-Djava.rmi.server.hostname=leshan-server-kafka-gateway -Dcom.sun.management.jmxremote.local.only=false
                   -Dcom.sun.management.jmxremote.rmi.port=9590 -Dcom.sun.management.jmxremote.port=9590
                   -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                   -Dcom.sun.management.jmxremote.ssl=false ${leshan.heap_opts}
@@ -382,9 +394,9 @@ services:
     deploy:
       placement:
         constraints:
-          - node.labels.type == ${gateway.id}
+          - node.role == manager
     labels:
-      io.zeelos.app: "zeelos"
+      io.zeelos.app: ${project.name}
       io.zeelos.role: "Leshan - OMA Lightweight M2M server and client in Java"
       io.zeelos.gatewayId: ${gateway.id}
 
@@ -445,6 +457,3 @@ networks:
   gateway:
     external: true
     name: edgenet_${gateway.id}
-  cloudnet:
-    external: true
-    name: cloudnet

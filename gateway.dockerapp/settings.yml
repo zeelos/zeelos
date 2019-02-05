@@ -1,3 +1,8 @@
+project: 
+    name: zeelos
+    region: europe
+    zone: west3-swarm
+
 ssl:
   truststorepass: itsasecret
   keystorepass: itsasecret
@@ -40,5 +45,5 @@ command:
 
 leshan:
   image: zeelos/leshan-server-kafka
-  version: 0.2-SNAPSHOT
+  version: 0.5-SNAPSHOT
   heap_opts: -Xmx256M -Xms256M
