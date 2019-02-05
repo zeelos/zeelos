@@ -144,6 +144,11 @@ gcloud compute firewall-rules create "$network-allow-kafka-broker-zookeeper" \
 --network "$network" \
 --allow tcp:2181,tcp:9580,tcp:9092,tcp:9581
 
+echo "creating firewall rule (allow:kafka-broker-zookeeper-edge).."
+gcloud compute firewall-rules create "$network-allow-kafka-broker-zookeeper-edge" \
+--network "$network" \
+--allow tcp:2171,tcp:9575,tcp:9082,tcp:9571
+
 echo "creating firewall rule (allow:kafka-schema-registry).."
 gcloud compute firewall-rules create "$network-allow-kafka-schema-registry" \
 --network "$network" \
@@ -163,6 +168,11 @@ echo "creating firewall rule (allow:kafka-connect-asset).."
 gcloud compute firewall-rules create "$network-allow-kafka-connect-asset" \
 --network "$network" \
 --allow tcp:8084,tcp:9585
+
+echo "creating firewall rule (allow:kafka-mirrormaker).."
+gcloud compute firewall-rules create "$network-allow-kafka-mirrormaker" \
+--network "$network" \
+--allow tcp:9574
 
 echo "creating firewall rule (allow:orientdb).."
 gcloud compute firewall-rules create "$network-allow-orientdb" \

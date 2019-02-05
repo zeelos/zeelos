@@ -45,6 +45,9 @@ gcloud --quiet compute firewall-rules delete "$network-allow-portainer-agent"
 echo "deleting firewall rule (allow:kafka-broker-zookeeper).."
 gcloud --quiet compute firewall-rules delete "$network-allow-kafka-broker-zookeeper"
 
+echo "deleting firewall rule (allow:kafka-broker-zookeeper-edge).."
+gcloud --quiet compute firewall-rules delete "$network-allow-kafka-broker-zookeeper-edge"
+
 echo "deleting firewall rule (allow:kafka-schema-registry).."
 gcloud --quiet compute firewall-rules delete "$network-allow-kafka-schema-registry"
 
@@ -56,6 +59,9 @@ gcloud --quiet compute firewall-rules delete "$network-allow-kafka-connect-influ
 
 echo "deleting firewall rule (allow:kafka-connect-asset).."
 gcloud --quiet compute firewall-rules delete "$network-allow-kafka-connect-asset"
+
+echo "deleting firewall rule (allow:kafka-mirrormaker).."
+gcloud --quiet compute firewall-rules delete "$network-allow-kafka-mirrormaker"
 
 echo "deleting firewall rule (allow:orientdb).."
 gcloud --quiet compute firewall-rules delete "$network-allow-orientdb"
