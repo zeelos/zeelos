@@ -14,7 +14,7 @@ services:
       - '--web.console.libraries=/etc/prometheus/console_libraries'
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention=${prometheus.retention_days}'
+      - '--storage.tsdb.retention.time=${prometheus.retention_days}'
     networks:
       - monnet
     ports:
@@ -37,7 +37,7 @@ services:
       io.zeelos.role: "Prometheus - From metrics to insight, Power your metrics and alerting with a leading open-source monitoring solution"
 
   alertmanager:
-    image: prom/alertmanager:v0.16.1
+    image: prom/alertmanager:v0.15.3
     volumes:
       - alertmanager-data:/alertmanager
     networks:
@@ -69,7 +69,7 @@ services:
         target: 8080
         mode: host
     environment:
-      - "ALERTMANAGER_URIS=default:http://alertmanager:9093"
+      - "ALERTMANAGER_URI=http://alertmanager:9093"
     deploy:
       placement:
         constraints:
