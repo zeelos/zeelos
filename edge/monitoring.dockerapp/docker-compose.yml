@@ -1,0 +1,155 @@
+# zeelos - monitoring
+# MAINTAINER zeelos.io - https://zeelos.io
+
+version: '3.6'
+
+services:
+
+  prometheus:
+    image: prom/prometheus:v2.7.1
+    volumes:
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/config.yml'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=${prometheus.retention_days}'
+    networks:
+      - monnet
+    ports:
+      - published: 9091
+        target: 9090
+        mode: host
+    configs:
+      - source: prometheus_config
+        target: /etc/prometheus/config.yml
+      - source: prometheus_task_rules
+        target: /etc/prometheus/swarm_task.rules.yml
+      - source: prometheus_node_rules
+        target: /etc/prometheus/swarm_node.rules.yml
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+    labels:
+      io.zeelos.app: ${project.name}
+      io.zeelos.role: "Prometheus - From metrics to insight, Power your metrics and alerting with a leading open-source monitoring solution"
+
+  alertmanager:
+    image: prom/alertmanager:v0.15.3
+    volumes:
+      - alertmanager-data:/alertmanager
+    networks:
+      - monnet
+    ports:
+      - published: 9093
+        target: 9093
+        mode: host
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+    configs:
+      - source: alertmanager.config
+        target: /etc/alertmanager/config.yml
+    labels:
+      io.zeelos.app: ${project.name}
+      io.zeelos.role: "alertmanager - The Alertmanager handles alerts sent by client applications such as the Prometheus server"
+
+  unsee:
+    image: cloudflare/unsee:v0.9.2
+    networks:
+      - monnet
+    ports:
+      - published: 9094
+        target: 8080
+        mode: host
+    environment:
+      - "ALERTMANAGER_URI=http://alertmanager:9093/"
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+    labels:
+      io.zeelos.app: ${project.name}
+      io.zeelos.role: "unsee - Alert dashboard for Prometheus Alertmanager"
+
+  cadvisor:
+    image: zeelos/cadvisor:v0.30.2
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock,readonly
+      - /:/rootfs
+      - /var/run:/var/run
+      - /sys:/sys
+      - /var/lib/docker/:/var/lib/docker
+    command: -logtostderr -docker_only
+    networks:
+      - monnet
+    ports:
+      - published: 8090
+        target: 8080
+        mode: host
+    deploy:
+      mode: global
+    labels:
+      io.zeelos.app: ${project.name}
+      io.zeelos.role: "cAdvisor - Analyzes resource usage and performance characteristics of running containers"
+
+  node-exporter:
+    image: zeelos/node_exporter:v0.16.0
+    environment:
+      - NODE_ID={{.Node.ID}}
+    networks:
+      - monnet
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+      - /etc/hostname:/etc/nodename
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points="^(/rootfs|/host|)/(sys|proc|dev|host|etc)($$$$|/)"'
+      - '--collector.filesystem.ignored-fs-types="^(sys|proc|auto|cgroup|devpts|ns|au|fuse\.lxc|mqueue)(fs|)$$$$"'
+      - '--collector.textfile.directory=/etc/node_exporter/'
+    deploy:
+      mode: global
+    labels:
+      io.zeelos.app: ${project.name}
+      io.zeelos.role: "node-exporter - Exporter for machine metrics"
+
+  docker-exporter:
+    image: zeelos/docker_exporter:1.7.3.1
+    environment:
+      - IN=172.17.0.1:9323
+      - OUT=9323
+    networks:
+      - monnet
+    deploy:
+      mode: global
+    labels:
+      io.zeelos.app: ${project.name}
+      io.zeelos.role: "docker-exporter - Provides the possibility of cat a TCP connection to a defined PORT"
+
+configs:
+  prometheus_config:
+    file: ../configs/prometheus/conf/config-edge.yml
+  prometheus_task_rules:
+    file: ../configs/prometheus/rules/swarm_task.rules.yml
+  prometheus_node_rules:
+    file: ../configs/prometheus/rules/swarm_node.rules.yml
+  alertmanager.config:
+    file: ../configs/alertmanager/config-edge.yml
+
+volumes:  
+  prometheus-data:
+  alertmanager-data:
+
+networks:
+  monnet:
+    external: true
+    name: monnet

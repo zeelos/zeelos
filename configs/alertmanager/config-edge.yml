@@ -1,0 +1,12 @@
+route:
+    receiver: 'slack'
+
+receivers:
+    - name: 'slack'
+      slack_configs:
+          - send_resolved: true
+            api_url: 'https://hooks.slack.com/services/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'
+            text: '{{ .CommonAnnotations.summary }} ---> {{ .CommonAnnotations.description }}'
+            username: 'Prometheus - Alerts'
+            channel: '#zeelos-upboard'
+            icon_emoji: ':dart:'
