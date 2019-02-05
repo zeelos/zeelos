@@ -5,7 +5,7 @@ version: '3.6'
 
 services:
 
-  zookeeper-1:
+  zookeeper-cloud-1:
     image: ${zookeeper.image}:${zookeeper.version}
     volumes:
       - zookeeper-data-1:/var/lib/zookeeper/data
@@ -16,7 +16,7 @@ services:
       - ZOOKEEPER_TICK_TIME=2000
       - ZOOKEEPER_INIT_LIMIT=5
       - ZOOKEEPER_SYNC_LIMIT= 2
-      - ZOOKEEPER_SERVERS=0.0.0.0:12888:13888;zookeeper-2:22888:23888;zookeeper-3:32888:33888
+      - ZOOKEEPER_SERVERS=0.0.0.0:12888:13888;zookeeper-cloud-2:22888:23888;zookeeper-cloud-3:32888:33888
       - KAFKA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-zookeeper-config.yml
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
@@ -48,7 +48,7 @@ services:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "ZooKeeper - An open-source server which enables highly reliable distributed coordination"
 
-  zookeeper-2:
+  zookeeper-cloud-2:
     image: ${zookeeper.image}:${zookeeper.version}
     volumes:
       - zookeeper-data-2:/var/lib/zookeeper/data
@@ -59,7 +59,7 @@ services:
       - ZOOKEEPER_TICK_TIME=2000
       - ZOOKEEPER_INIT_LIMIT=5
       - ZOOKEEPER_SYNC_LIMIT= 2
-      - ZOOKEEPER_SERVERS=zookeeper-1:12888:13888;0.0.0.0:22888:23888;zookeeper-3:32888:33888
+      - ZOOKEEPER_SERVERS=zookeeper-cloud-1:12888:13888;0.0.0.0:22888:23888;zookeeper-cloud-3:32888:33888
       - KAFKA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-zookeeper-config.yml
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
@@ -91,7 +91,7 @@ services:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "ZooKeeper - An open-source server which enables highly reliable distributed coordination"
 
-  zookeeper-3:
+  zookeeper-cloud-3:
     image: ${zookeeper.image}:${zookeeper.version}
     volumes:
       - zookeeper-data-3:/var/lib/zookeeper/data
@@ -102,7 +102,7 @@ services:
       - ZOOKEEPER_TICK_TIME=2000
       - ZOOKEEPER_INIT_LIMIT=5
       - ZOOKEEPER_SYNC_LIMIT= 2
-      - ZOOKEEPER_SERVERS=zookeeper-1:12888:13888;zookeeper-2:22888:23888;0.0.0.0:32888:33888
+      - ZOOKEEPER_SERVERS=zookeeper-cloud-1:12888:13888;zookeeper-cloud-2:22888:23888;0.0.0.0:32888:33888
       - KAFKA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-zookeeper-config.yml
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
@@ -134,22 +134,28 @@ services:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "ZooKeeper - An open-source server which enables highly reliable distributed coordination"
 
-  kafka-1:
+  kafka-cloud-1:
     image: ${kafka.image}:${kafka.version}
     volumes:
       - kafka-data-1:/var/lib/kafka/data
     environment:
       - KAFKA_BROKER_ID=1
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper-cloud-1:2181,zookeeper-cloud-2:2181,zookeeper-cloud-3:2181
       - KAFKA_LISTENERS=SSL://0.0.0.0:9092
-      - KAFKA_ADVERTISED_LISTENERS=SSL://${project.name}-${project.region}-${project.zone}-worker-1:9092
+      - KAFKA_ADVERTISED_LISTENERS=SSL://kafka-cloud-1:9092
       - KAFKA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-kafka-config.yml
-      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=3
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_NUM_PARTITIONS=3
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=false
+      - KAFKA_DELETE_TOPIC_ENABLE=false
       - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
       - KAFKA_HEAP_OPTS=${kafka.heap_opts}
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
-                       -Djava.rmi.server.hostname=${project.name}-${project.region}-${project.zone}-worker-1
+                       -Djava.rmi.server.hostname=kafka-cloud-1
                        -Dcom.sun.management.jmxremote.local.only=false
                        -Dcom.sun.management.jmxremote.rmi.port=9581
                        -Dcom.sun.management.jmxremote.port=9581
@@ -195,22 +201,28 @@ services:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "Kafka - A distributed streaming platform"
 
-  kafka-2:
+  kafka-cloud-2:
     image: ${kafka.image}:${kafka.version}
     volumes:
       - kafka-data-2:/var/lib/kafka/data
     environment:
       - KAFKA_BROKER_ID=2
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper-cloud-1:2181,zookeeper-cloud-2:2181,zookeeper-cloud-3:2181
       - KAFKA_LISTENERS=SSL://0.0.0.0:9092
-      - KAFKA_ADVERTISED_LISTENERS=SSL://${project.name}-${project.region}-${project.zone}-worker-2:9092
+      - KAFKA_ADVERTISED_LISTENERS=SSL://kafka-cloud-2:9092
       - KAFKA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-kafka-config.yml
-      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=3
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_NUM_PARTITIONS=3
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=false
+      - KAFKA_DELETE_TOPIC_ENABLE=false      
       - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
       - KAFKA_HEAP_OPTS=${kafka.heap_opts}
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
-                       -Djava.rmi.server.hostname=${project.name}-${project.region}-${project.zone}-worker-2
+                       -Djava.rmi.server.hostname=kafka-cloud-2
                        -Dcom.sun.management.jmxremote.local.only=false
                        -Dcom.sun.management.jmxremote.rmi.port=9581
                        -Dcom.sun.management.jmxremote.port=9581
@@ -256,22 +268,28 @@ services:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "Kafka - A distributed streaming platform"
 
-  kafka-3:
+  kafka-cloud-3:
     image: ${kafka.image}:${kafka.version}
     volumes:
       - kafka-data-3:/var/lib/kafka/data
     environment:
       - KAFKA_BROKER_ID=3
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper-cloud-1:2181,zookeeper-cloud-2:2181,zookeeper-cloud-3:2181
       - KAFKA_LISTENERS=SSL://0.0.0.0:9092
-      - KAFKA_ADVERTISED_LISTENERS=SSL://${project.name}-${project.region}-${project.zone}-worker-3:9092
+      - KAFKA_ADVERTISED_LISTENERS=SSL://kafka-cloud-3:9092
       - KAFKA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-kafka-config.yml
-      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=3
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_NUM_PARTITIONS=3
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=false
+      - KAFKA_DELETE_TOPIC_ENABLE=false      
       - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
       - KAFKA_HEAP_OPTS=${kafka.heap_opts}
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
-                       -Djava.rmi.server.hostname=${project.name}-${project.region}-${project.zone}-worker-3
+                       -Djava.rmi.server.hostname=kafka-cloud-3
                        -Dcom.sun.management.jmxremote.local.only=false
                        -Dcom.sun.management.jmxremote.rmi.port=9581
                        -Dcom.sun.management.jmxremote.port=9581
@@ -317,20 +335,21 @@ services:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "Kafka - A distributed streaming platform"
 
-  schema-registry-1:
+  schema-registry-cloud:
     image: ${schema.image}:${schema.version}
     environment:
-      - SCHEMA_REGISTRY_HOST_NAME=${project.name}-${project.region}-${project.zone}-worker-4
+      - SCHEMA_REGISTRY_HOST_NAME=schema-registry-cloud
       - SCHEMA_REGISTRY_LISTENERS=https://0.0.0.0:8081
-      - SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS=SSL://kafka-1:9092,SSL://kafka-2:9092,SSL://kafka-3:9092
+      - SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS=SSL://kafka-cloud-1:9092,SSL://kafka-cloud-2:9092,SSL://kafka-cloud-3:9092
       - SCHEMA_REGISTRY_MASTER_ELIGIBILIY=true
+      - SCHEMA_REGISTRY_INTER_INSTANCE_PROTOCOL=https
       - SCHEMA_REGISTRY_SCHEMA_REGISTRY_GROUP_ID=${project.name}
       - SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_METHODS=GET,POST,PUT,DELETE,OPTIONS
       - SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_ORIGIN=*
       - SCHEMA_REGISTRY_HEAP_OPTS=${schema.heap_opts}
       - SCHEMA_REGISTRY_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                                  -Dcom.sun.management.jmxremote.ssl=false
-                                 -Djava.rmi.server.hostname=${project.name}-${project.region}-${project.zone}-worker-4
+                                 -Djava.rmi.server.hostname=schema-registry-cloud
                                  -Dcom.sun.management.jmxremote.local.only=false
                                  -Dcom.sun.management.jmxremote.rmi.port=9582
                                  -Dcom.sun.management.jmxremote.port=9582
@@ -347,7 +366,6 @@ services:
       - SCHEMA_REGISTRY_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
       - SCHEMA_REGISTRY_SSL_KEY_PASSWORD=${ssl.keypass}
       - SCHEMA_REGISTRY_SSL_CLIENT_AUTH=true
-      - SCHEMA_REGISTRY_SCHEMA_REGISTRY_INTER_INSTANCE_PROTOCOL=https
       - SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL=INFO
     secrets:
       - source: kafka.schema-registry-cloud.keystore.jks
@@ -359,7 +377,7 @@ services:
     ports:
       - published: 8081
         target: 8081
-        mode: host
+        mode: ingress
       - published: 9582
         target: 9582
         mode: host
@@ -371,21 +389,21 @@ services:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "Schema Registry - Schema registry for Apache Kafka"
 
-  kafka-rest-1:
+  rest-cloud:
     image: ${rest.image}:${rest.version}
     environment:
-      - KAFKA_REST_HOST_NAME=${project.name}-${project.region}-${project.zone}-worker-4
+      - KAFKA_REST_HOST_NAME=rest-cloud
       - KAFKA_REST_LISTENERS=https://0.0.0.0:8082
-      - KAFKA_REST_ZOOKEEPER_CONNECT=zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
-      - KAFKA_REST_BOOTSTRAP_SERVERS=SSL://kafka-1:9092,SSL://kafka-2:9092,SSL://kafka-3:9092
-      - KAFKA_REST_SCHEMA_REGISTRY_URL=https://schema-registry-1:8081
+      - KAFKA_REST_ZOOKEEPER_CONNECT=zookeeper-cloud-1:2181,zookeeper-cloud-2:2181,zookeeper-cloud-3:2181
+      - KAFKA_REST_BOOTSTRAP_SERVERS=SSL://kafka-cloud-1:9092,SSL://kafka-cloud-2:9092,SSL://kafka-cloud-3:9092
+      - KAFKA_REST_SCHEMA_REGISTRY_URL=https://schema-registry-cloud:8081
       - KAFKA_REST_ACCESS_CONTROL_ALLOW_METHODS=GET,POST,PUT,DELETE,OPTIONS
       - KAFKA_REST_ACCESS_CONTROL_ALLOW_ORIGIN=*
       - KAFKA_REST_CONSUMER_REQUEST_TIMEOUT_MS=30000
       - KAFKAREST_HEAP_OPTS=${rest.heap_opts}
       - KAFKAREST_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                            -Dcom.sun.management.jmxremote.ssl=false
-                           -Djava.rmi.server.hostname=${project.name}-${project.region}-${project.zone}-worker-4
+                           -Djava.rmi.server.hostname=rest-cloud
                            -Dcom.sun.management.jmxremote.local.only=false
                            -Dcom.sun.management.jmxremote.rmi.port=9583
                            -Dcom.sun.management.jmxremote.port=9583
@@ -460,9 +478,9 @@ services:
       - cloudnet
       - monnet
     command:
-      - '--kafka.server=kafka-1:9092'
-      - '--kafka.server=kafka-2:9092'
-      - '--kafka.server=kafka-3:9092'
+      - '--kafka.server=kafka-cloud-1:9092'
+      - '--kafka.server=kafka-cloud-2:9092'
+      - '--kafka.server=kafka-cloud-3:9092'
       - '--web.listen-address=:8080'
       - '--tls.enabled'
       - '--tls.cert-file=/etc/kafka/secrets/client-cloud.certificate.pem'

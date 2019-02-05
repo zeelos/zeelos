@@ -13,7 +13,7 @@ services:
       - ORIENTDB_ROOT_PASSWORD=${orientdb.rootpass}
       - JAVA_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                   -Dcom.sun.management.jmxremote.ssl=false
-                  -Djava.rmi.server.hostname=${project.name}-${project.region}-${project.zone}-worker-5
+                  -Djava.rmi.server.hostname=orientdb
                   -Dcom.sun.management.jmxremote.local.only=false
                   -Dcom.sun.management.jmxremote.rmi.port=9450
                   -Dcom.sun.management.jmxremote.port=9450
