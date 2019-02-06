@@ -42,10 +42,10 @@ services:
     networks:
       - gateway
       - monnet
-    ports:
-      - published: 9595
-        target: 9595
-        mode: host
+    # ports:
+    #   - published: 9595
+    #     target: 9595
+    #     mode: host
     deploy:
       placement:
         constraints:
@@ -93,10 +93,10 @@ services:
     networks:
       - gateway
       - monnet
-    ports:
-      - published: 9596
-        target: 9596
-        mode: host
+    # ports:
+    #   - published: 9596
+    #     target: 9596
+    #     mode: host
     deploy:
       placement:
         constraints:
