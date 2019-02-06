@@ -1,6 +1,14 @@
 groups:
 - name: /prometheus-swarm/rules/swarm_node.rules.yml
   rules:
+  - alert: node_down
+    expr: up{job="node-exporter"} == 0
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      description: Swarm node {{ $labels.instance }} is down for 1m
+      summary: Swarm Node is down '{{ $labels.instance }}'
   - alert: node_cpu_usage
     expr: 100 - (avg(irate(node_cpu_seconds_total{mode="idle"}[1m]) * ON(instance) GROUP_LEFT(node_name)
       node_meta * 100) BY (node_name)) > 50
