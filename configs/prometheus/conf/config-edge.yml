@@ -62,3 +62,17 @@ scrape_configs:
       - 'tasks.kafka-exporter'
       type: 'A'
       port: 8080
+
+  - job_name: 'kstreams-aggregate'
+    dns_sd_configs:
+    - names:
+      - 'tasks.kstreams-aggregate'
+      type: 'A'
+      port: 8080
+
+  - job_name: 'kstreams-temperature'
+    dns_sd_configs:
+    - names:
+      - 'tasks.kstreams-temperature'
+      type: 'A'
+      port: 8080
