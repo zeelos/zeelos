@@ -11,7 +11,7 @@ rm -f *.crt *.csr *_creds *.jks *.srl *.key *.pem *.der *.p12
 # Generate CA key
 openssl req -new -x509 -keyout zeelos.io-ca.key -out zeelos.io-ca.crt -days 9999 -subj '/CN=zeelos.io/OU=dev/O=zeelos.io/L=Athens/C=GR' -passin pass:itsasecret -passout pass:itsasecret
 
-for i in kafka-cloud connect-cloud schema-registry-cloud rest-cloud client-cloud kafka-gateway schema-registry-gateway rest-gateway client-gateway
+for i in kafka-cloud connect-cloud schema-registry-cloud rest-cloud client-cloud kafka-edge schema-registry-edge rest-edge client-edge
 do
 	echo "------------------------------- $i -------------------------------"
 

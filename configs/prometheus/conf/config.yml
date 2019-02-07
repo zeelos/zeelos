@@ -84,6 +84,20 @@ scrape_configs:
       type: 'A'
       port: 8080
 
+  - job_name: 'schema-registry-cloud'
+    dns_sd_configs:
+    - names:
+      - 'tasks.schema-registry-cloud'
+      type: 'A'
+      port: 8080
+
+  - job_name: 'rest-cloud'
+    dns_sd_configs:
+    - names:
+      - 'tasks.rest-cloud'
+      type: 'A'
+      port: 8080
+
   - job_name: 'kafka-exporter'
     dns_sd_configs:
     - names:
