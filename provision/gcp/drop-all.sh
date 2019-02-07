@@ -22,7 +22,7 @@ image="opensuse-leap-15"
 image_project="zeelos-io"
 
 echo "deleting route to VPN internal hosts.."
-gcloud compute routes delete "$network-route-to-vpn-internal-hosts"
+gcloud --quiet compute routes delete "$network-route-to-vpn-internal-hosts"
 
 echo "deleting firewall rule (allow:icmp).."
 gcloud  --quiet compute firewall-rules delete "$network-allow-icmp"
