@@ -8,7 +8,7 @@ ssl:
   keystorepass: itsasecret
   keypass: itsasecret
   
-gateway:
+edge:
   id: FILL ME
 
 kstreams:

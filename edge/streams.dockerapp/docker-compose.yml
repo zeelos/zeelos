@@ -5,42 +5,42 @@ version: '3.6'
 
 services:
 
-  kstreams-aggregate:
+  kstreams-aggregate-edge:
     image: ${kstreams.image}:${kstreams.version}
     volumes:
       - kstreams-aggregate-state:/opt/kafka-streams-leshan/state
     environment:
       - JAVA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-kstreams-config.yml
-                  -Djava.rmi.server.hostname=kstreams-aggregate -Dcom.sun.management.jmxremote.local.only=false
+                  -Djava.rmi.server.hostname=kstreams-aggregate-edge -Dcom.sun.management.jmxremote.local.only=false
                   -Dcom.sun.management.jmxremote.rmi.port=9595 -Dcom.sun.management.jmxremote.port=9595
                   -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                   -Dcom.sun.management.jmxremote.ssl=false
                   -Djava.awt.headless=true
-                  -Djavax.net.ssl.trustStore=/etc/kafka/secrets/kafka.client-gateway.truststore.jks
+                  -Djavax.net.ssl.trustStore=/etc/kafka/secrets/kafka.client-edge.truststore.jks
                   -Djavax.net.ssl.trustStorePassword=${ssl.truststorepass}
-                  -Djavax.net.ssl.keyStore=/etc/kafka/secrets/kafka.client-gateway.keystore.jks
+                  -Djavax.net.ssl.keyStore=/etc/kafka/secrets/kafka.client-edge.keystore.jks
                   -Djavax.net.ssl.keyStorePassword=${ssl.keystorepass}
     command:
       - io.zeelos.leshan.kafka.streams.SimpleAnalyticsStreamsApp
-      - kafka-gateway:9082
-      - https://schema-registry-gateway:8071
-      - iot.${gateway.id}.observations
+      - kafka-edge:9082
+      - https://schema-registry-edge:8071
+      - iot.${edge.id}.observations
       - /opt/kafka-streams-leshan/state
-      - /etc/kafka/secrets/client_security_gateway.properties
+      - /etc/kafka/secrets/edge.properties
     configs:
       - source: kstreams.jmx-exporter-javaagent-jar
         target: /etc/kafka/prometheus/jmx_prometheus_javaagent.jar
       - source: kstreams.jmx-exporter-kstreams-config
         target: /etc/kafka/prometheus/jmx-exporter-kstreams-config.yml
     secrets:
-      - source: kafka.client-gateway.keystore.jks
-        target: /etc/kafka/secrets/kafka.client-gateway.keystore.jks
-      - source: kafka.client-gateway.truststore.jks
-        target: /etc/kafka/secrets/kafka.client-gateway.truststore.jks
-      - source: client_security_gateway.properties
-        target: /etc/kafka/secrets/client_security_gateway.properties
+      - source: kafka.client-edge.keystore.jks
+        target: /etc/kafka/secrets/kafka.client-edge.keystore.jks
+      - source: kafka.client-edge.truststore.jks
+        target: /etc/kafka/secrets/kafka.client-edge.truststore.jks
+      - source: client_security_edge.properties
+        target: /etc/kafka/secrets/client_security_edge.properties
     networks:
-      - gateway
+      - edge
       - monnet
     # ports:
     #   - published: 9595
@@ -53,45 +53,45 @@ services:
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "kstreams-aggregate - Aggregates sensor readings by 'endpoint id' and by 'endpoint id' and 'path' per minute"
-      io.zeelos.gatewayId: ${gateway.id}
+      io.zeelos.edgeId: ${edge.id}
 
-  kstreams-temperature:
+  kstreams-temperature-edge:
     image: ${kstreams.image}:${kstreams.version}
     volumes:
       - kstreams-temperature-state:/opt/kafka-streams-leshan/state
     environment:
       - JAVA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-kstreams-config.yml
-                  -Djava.rmi.server.hostname=kstreams-temperature -Dcom.sun.management.jmxremote.local.only=false
+                  -Djava.rmi.server.hostname=kstreams-temperature-edge -Dcom.sun.management.jmxremote.local.only=false
                   -Dcom.sun.management.jmxremote.rmi.port=9596 -Dcom.sun.management.jmxremote.port=9596
                   -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                   -Dcom.sun.management.jmxremote.ssl=false
                   -Djava.awt.headless=true
-                  -Djavax.net.ssl.trustStore=/etc/kafka/secrets/kafka.client-gateway.truststore.jks
+                  -Djavax.net.ssl.trustStore=/etc/kafka/secrets/kafka.client-edge.truststore.jks
                   -Djavax.net.ssl.trustStorePassword=${ssl.truststorepass}
-                  -Djavax.net.ssl.keyStore=/etc/kafka/secrets/kafka.client-gateway.keystore.jks
+                  -Djavax.net.ssl.keyStore=/etc/kafka/secrets/kafka.client-edge.keystore.jks
                   -Djavax.net.ssl.keyStorePassword=${ssl.keystorepass}
     command:
       - io.zeelos.leshan.kafka.streams.TemperatureStreamsApp
-      - kafka-gateway:9082
-      - https://schema-registry-gateway:8071
-      - iot.${gateway.id}.observations
-      - analytics.${gateway.id}.observations.maxper30sec
+      - kafka-edge:9082
+      - https://schema-registry-edge:8071
+      - iot.${edge.id}.observations
+      - analytics.${edge.id}.observations.maxper30sec
       - /opt/kafka-streams-leshan/state
-      - /etc/kafka/secrets/client_security_gateway.properties
+      - /etc/kafka/secrets/client_security_edge.properties
     configs:
       - source: kstreams.jmx-exporter-javaagent-jar
         target: /etc/kafka/prometheus/jmx_prometheus_javaagent.jar
       - source: kstreams.jmx-exporter-kstreams-config
         target: /etc/kafka/prometheus/jmx-exporter-kstreams-config.yml
     secrets:
-      - source: kafka.client-gateway.keystore.jks
-        target: /etc/kafka/secrets/kafka.client-gateway.keystore.jks
-      - source: kafka.client-gateway.truststore.jks
-        target: /etc/kafka/secrets/kafka.client-gateway.truststore.jks
-      - source: client_security_gateway.properties
-        target: /etc/kafka/secrets/client_security_gateway.properties
+      - source: kafka.client-edge.keystore.jks
+        target: /etc/kafka/secrets/kafka.client-edge.keystore.jks
+      - source: kafka.client-edge.truststore.jks
+        target: /etc/kafka/secrets/kafka.client-edge.truststore.jks
+      - source: client_security_edge.properties
+        target: /etc/kafka/secrets/client_security_edge.properties
     networks:
-      - gateway
+      - edge
       - monnet
     # ports:
     #   - published: 9596
@@ -104,7 +104,7 @@ services:
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "kstreams-temperature - Calculates the maximum temperature of the incoming observations grouped by 'endpoint id' and 'path' over a period of 30 secs"
-      io.zeelos.gatewayId: ${gateway.id}
+      io.zeelos.edgeId: ${edge.id}
 
 configs:
   kstreams.jmx-exporter-javaagent-jar:
@@ -113,12 +113,12 @@ configs:
     file: ../configs/prometheus/exporters/kafka/jmx-exporter-kstreams-config.yml
 
 secrets:
-  kafka.client-gateway.keystore.jks:
-    file: ../security/kafka.client-gateway.keystore.jks
-  kafka.client-gateway.truststore.jks:
-    file: ../security/kafka.client-gateway.truststore.jks
-  client_security_gateway.properties:
-    file: ../security/client_security_gateway.properties
+  kafka.client-edge.keystore.jks:
+    file: ../security/kafka.client-edge.keystore.jks
+  kafka.client-edge.truststore.jks:
+    file: ../security/kafka.client-edge.truststore.jks
+  client_security_edge.properties:
+    file: ../security/client_security_edge.properties
 
 volumes:
   kstreams-aggregate-state:
@@ -128,6 +128,6 @@ networks:
   monnet:
     external: true
     name: monnet
-  gateway:
+  edge:
     external: true
-    name: edgenet_${gateway.id}
+    name: edgenet_${edge.id}

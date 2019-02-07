@@ -11,7 +11,7 @@ ssl:
 compression:
   type: snappy
   
-gateway:
+edge:
   id: FILL ME
 
 zookeeper:

@@ -1,0 +1,4 @@
+leshan:
+  image: zeelos/leshan-server-kafka
+  version: 0.2-SNAPSHOT
+  heap_opts: -Xmx256M -Xms256M

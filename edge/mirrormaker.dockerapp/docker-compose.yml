@@ -1,0 +1,89 @@
+# zeelos - edge
+# MAINTAINER zeelos.io - https://zeelos.io
+
+version: '3.6'
+
+services:
+
+
+  kafka-mirrormaker-edge:
+    image: ${mirrormaker.image}:${mirrormaker.version}
+    environment:
+      - MIRRORMAKER_WHITE_LIST=^iot.${edge.id}.management.req
+      - MIRRORMAKER_ABORT_ON_SEND_FAILURE=true
+      - MIRRORMAKER_OFFSET_COMMIT_INTERVAL=10000
+      - MIRRORMAKER_NUM_STREAMS=1
+      - CONSUMER_BOOTSTRAP_SERVERS=SSL://kafka-cloud-1:9092,SSL://kafka-cloud-2:9092,SSL://kafka-cloud-3:9092
+      - CONSUMER_GROUP_ID=mirrormaker_edge_${edge.id}
+      - CONSUMER_AUTO_OFFSET_RESET=earliest
+      - PRODUCER_BOOTSTRAP_SERVERS=SSL://kafka-edge:9082
+      - KAFKA_HEAP_OPTS=${mirrormaker.heap_opts}
+      - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
+                       -Dcom.sun.management.jmxremote.ssl=false
+                       -Djava.rmi.server.hostname=kafka-mirrormaker-edge
+                       -Dcom.sun.management.jmxremote.local.only=false
+                       -Dcom.sun.management.jmxremote.rmi.port=9564
+                       -Dcom.sun.management.jmxremote.port=9564
+      - PRODUCER_COMPRESSION_TYPE=${compression.type}
+      - PRODUCER_SECURITY_PROTOCOL=SSL
+      - PRODUCER_SSL_TRUSTSTORE_LOCATION=/etc/kafka/secrets/kafka.client-edge.truststore.jks
+      - PRODUCER_SSL_TRUSTSTORE_PASSWORD=${ssl.truststorepass}
+      - PRODUCER_SSL_KEYSTORE_LOCATION=/etc/kafka/secrets/kafka.client-edge.keystore.jks
+      - PRODUCER_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
+      - PRODUCER_SSL_KEY_PASSWORD=${ssl.keypass}
+      - CONSUMER_SECURITY_PROTOCOL=SSL
+      - CONSUMER_SSL_TRUSTSTORE_LOCATION=/etc/kafka/secrets/kafka.client-cloud.truststore.jks
+      - CONSUMER_SSL_TRUSTSTORE_PASSWORD=${ssl.truststorepass}
+      - CONSUMER_SSL_KEYSTORE_LOCATION=/etc/kafka/secrets/kafka.client-cloud.keystore.jks
+      - CONSUMER_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
+      - CONSUMER_SSL_KEY_PASSWORD=${ssl.keypass}
+      - CONSUMER_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=
+    secrets:
+      - source: kafka.client-edge.keystore.jks
+        target: /etc/kafka/secrets/kafka.client-edge.keystore.jks
+      - source: kafka.client-edge.truststore.jks
+        target: /etc/kafka/secrets/kafka.client-edge.truststore.jks
+      - source: kafka.client-cloud.keystore.jks
+        target: /etc/kafka/secrets/kafka.client-cloud.keystore.jks
+      - source: kafka.client-cloud.truststore.jks
+        target: /etc/kafka/secrets/kafka.client-cloud.truststore.jks
+    networks:
+      - edge
+    ports:
+      - published: 9564
+        target: 9564
+        mode: host
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+    labels:
+      io.zeelos.app: ${project.name}
+      io.zeelos.role: "Kafka MirrorMaker - A stand-alone tool for copying data between two Apache Kafka clusters"
+      io.zeelos.edgeId: ${edge.id}
+
+configs:
+  kafka.jmx-exporter-javaagent-jar:
+    file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.3.1.jar
+  kafka.jmx-exporter-zookeeper-config:
+    file: ../configs/prometheus/exporters/kafka/jmx-exporter-zookeeper-config.yml
+  kafka.jmx-exporter-kafka-config:
+    file: ../configs/prometheus/exporters/kafka/jmx-exporter-kafka-config.yml
+
+secrets:
+  kafka.client-edge.keystore.jks:
+    file: ../security/kafka.client-edge.keystore.jks
+  kafka.client-edge.truststore.jks:
+    file: ../security/kafka.client-edge.truststore.jks
+  kafka.client-cloud.keystore.jks:
+    file: ../security/kafka.client-cloud.keystore.jks
+  kafka.client-cloud.truststore.jks:
+    file: ../security/kafka.client-cloud.truststore.jks
+
+networks:
+  monnet:
+    external: true
+    name: monnet
+  edge:
+    external: true
+    name: edgenet_${edge.id}

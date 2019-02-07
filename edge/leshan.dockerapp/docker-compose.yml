@@ -1,0 +1,105 @@
+# zeelos - leshan-server
+# MAINTAINER zeelos.io - https://zeelos.io
+
+version: '3.6'
+
+services:
+
+  leshan-server-kafka-edge:
+    image: ${leshan.image}:${leshan.version}
+    volumes:
+      - leshan-server-data:/opt/leshan-server-kafka
+    environment:
+      - SERVERID=${edge.id}
+      - KAFKA_TOPIC_REGISTRATIONS=iot.${edge.id}.registrations
+      - KAFKA_TOPIC_OBSERVATIONS=iot.${edge.id}.observations
+      - KAFKA_TOPIC_MANAGEMENT_REQ=iot.${edge.id}.management.req
+      - KAFKA_TOPIC_MANAGEMENT_REP=iot.${edge.id}.management.rep
+      - KAFKA_PRODUCER_COMPRESSION_TYPE=${compression.type}
+      - KAFKA_PRODUCER_BATCH_SIZE_CONFIG=16384
+      - KAFKA_PRODUCER_LINGER_MS=0
+      - KAFKA_BOOTSTRAP_SERVER=SSL://kafka-edge:9082
+      - KAFKA_SCHEMA_REGISTRY_URL=https://schema-registry-edge:8071
+      - JAVA_OPTS=-Djava.rmi.server.hostname=leshan-server-kafka-edge -Dcom.sun.management.jmxremote.local.only=false
+                  -Dcom.sun.management.jmxremote.rmi.port=9590 -Dcom.sun.management.jmxremote.port=9590
+                  -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
+                  -Dcom.sun.management.jmxremote.ssl=false ${leshan.heap_opts}
+                  -XX:+UseG1GC -XX:MaxGCPauseMillis=20
+                  -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent
+                  -Xloggc:/opt/leshan-server-kafka/leshanServer-gc.log -verbose:gc
+                  -XX:+PrintGCDetails -XX:+PrintGCDateStamps
+                  -XX:+PrintGCTimeStamps -XX:+UseGCLogFileRotation
+                  -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M
+                  -Djava.awt.headless=true
+                  -Djavax.net.ssl.trustStore=/etc/kafka/secrets/kafka.client-edge.truststore.jks
+                  -Djavax.net.ssl.trustStorePassword=${ssl.truststorepass}
+                  -Djavax.net.ssl.keyStore=/etc/kafka/secrets/kafka.client-edge.keystore.jks
+                  -Djavax.net.ssl.keyStorePassword=${ssl.keystorepass}
+      - KAFKA_SSL_PROPERTIES_LOCATION=/etc/kafka/secrets/client_security_edge.properties
+    secrets:
+      - source: kafka.client-edge.keystore.jks
+        target: /etc/kafka/secrets/kafka.client-edge.keystore.jks
+      - source: kafka.client-edge.truststore.jks
+        target: /etc/kafka/secrets/kafka.client-edge.truststore.jks
+      - source: client_security_edge.properties
+        target: /etc/kafka/secrets/client_security_edge.properties
+      - source: client-edge.certificate.pem
+        target: /etc/kafka/secrets/client-edge.certificate.pem
+      - source: client-edge.key
+        target: /etc/kafka/secrets/client-edge.key
+    networks:
+      - edge
+    ports:
+      - published: 8080
+        target: 8080
+        mode: host
+      - published: 5683
+        target: 5683
+        protocol: udp
+        mode: host
+      - published: 5684
+        target: 5684
+        protocol: udp
+        mode: host
+      - published: 9590
+        target: 9590
+        mode: host
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+    labels:
+      io.zeelos.app: ${project.name}
+      io.zeelos.role: "Leshan - OMA Lightweight M2M server and client in Java"
+      io.zeelos.edgeId: ${edge.id}
+
+configs:
+  kafka.jmx-exporter-javaagent-jar:
+    file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.3.1.jar
+  kafka.jmx-exporter-zookeeper-config:
+    file: ../configs/prometheus/exporters/kafka/jmx-exporter-zookeeper-config.yml
+  kafka.jmx-exporter-kafka-config:
+    file: ../configs/prometheus/exporters/kafka/jmx-exporter-kafka-config.yml
+
+secrets:
+  kafka.client-edge.keystore.jks:
+    file: ../security/kafka.client-edge.keystore.jks
+  kafka.client-edge.truststore.jks:
+    file: ../security/kafka.client-edge.truststore.jks
+  client_security_edge.properties:
+    file: ../security/client_security_edge.properties
+  client-edge.certificate.pem:
+    file: ../security/client-edge.certificate.pem
+  client-edge.key:
+    file: ../security/client-edge.key
+
+volumes:
+  leshan-server-data:
+
+networks:
+  monnet:
+    external: true
+    name: monnet
+  edge:
+    external: true
+    name: edgenet_${edge.id}

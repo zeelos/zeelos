@@ -5,7 +5,7 @@ version: '3.6'
 
 services:
 
-  prometheus:
+  prometheus-edge:
     image: prom/prometheus:v2.7.1
     volumes:
       - prometheus-data:/prometheus
@@ -36,7 +36,7 @@ services:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "Prometheus - From metrics to insight, Power your metrics and alerting with a leading open-source monitoring solution"
 
-  alertmanager:
+  alertmanager-edge:
     image: prom/alertmanager:v0.15.3
     volumes:
       - alertmanager-data:/alertmanager
@@ -69,7 +69,7 @@ services:
         target: 8080
         mode: host
     environment:
-      - "ALERTMANAGER_URI=http://alertmanager:9093/"
+      - "ALERTMANAGER_URI=http://alertmanager-edge:9093/"
     deploy:
       placement:
         constraints:
@@ -78,7 +78,7 @@ services:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "unsee - Alert dashboard for Prometheus Alertmanager"
 
-  cadvisor:
+  cadvisor-edge:
     image: zeelos/cadvisor:v0.30.2
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock,readonly
@@ -99,7 +99,7 @@ services:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "cAdvisor - Analyzes resource usage and performance characteristics of running containers"
 
-  node-exporter:
+  node-exporter-edge:
     image: zeelos/node_exporter:v0.16.0
     environment:
       - NODE_ID={{.Node.ID}}
@@ -122,7 +122,7 @@ services:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "node-exporter - Exporter for machine metrics"
 
-  docker-exporter:
+  docker-exporter-edge:
     image: zeelos/docker_exporter:1.7.3.1
     environment:
       - IN=172.17.0.1:9323

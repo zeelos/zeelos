@@ -1,0 +1,33 @@
+zookeeper:
+  image: zeelos/cp-zookeeper
+  version: 5.0.0-arm32v7
+  heap_opts: -Xmx32M -Xms32M
+
+kafka:
+  image: zeelos/cp-kafka
+  version: 5.0.0-arm32v7
+  heap_opts: -Xmx256M -Xms256M
+
+schema:
+  image: zeelos/cp-schema-registry
+  version: 5.0.0-arm32v7
+  heap_opts: -Xmx32M -Xms32M
+
+rest:
+  image: zeelos/cp-kafka-rest
+  version: 5.0.0-arm32v7
+  heap_opts: -Xmx32M -Xms32M
+
+mirrormaker:
+  image: zeelos/kafka-mirrormaker
+  version: 5.0.0-arm32v7
+  heap_opts: -Xmx32M -Xms32M
+
+command:
+  image: zeelos/cp-kafka-connect-base
+  version: 5.0.0-arm32v7
+
+leshan:
+  image: zeelos/leshan-server-kafka
+  version: 0.2-SNAPSHOT-arm32v7
+  heap_opts: -Xmx64M -Xms64M
