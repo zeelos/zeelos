@@ -10,13 +10,13 @@ services:
     environment:
       - CONNECT_BOOTSTRAP_SERVERS=SSL://kafka-cloud-1:9092,SSL://kafka-cloud-2:9092,SSL://kafka-cloud-3:9092
       - CONNECT_LISTENERS=https://0.0.0.0:8083
-      - CONNECT_GROUP_ID=zeelos-connect-${gateway.id}-influxdb-group
-      - CONNECT_CONFIG_STORAGE_TOPIC=zeelos-connect-${gateway.id}-influxdb-configs
+      - CONNECT_GROUP_ID=zeelos-connect-${edge.id}-influxdb-group
+      - CONNECT_CONFIG_STORAGE_TOPIC=zeelos-connect-${edge.id}-influxdb-configs
       - CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR=3
-      - CONNECT_OFFSET_STORAGE_TOPIC=zeelos-connect-${gateway.id}-influxdb-offsets
+      - CONNECT_OFFSET_STORAGE_TOPIC=zeelos-connect-${edge.id}-influxdb-offsets
       - CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR=3
       - CONNECT_OFFSET_FLUSH_INTERVAL_MS=10000
-      - CONNECT_STATUS_STORAGE_TOPIC=zeelos-connect-${gateway.id}-influxdb-status
+      - CONNECT_STATUS_STORAGE_TOPIC=zeelos-connect-${edge.id}-influxdb-status
       - CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=3
       - CONNECT_KEY_CONVERTER=io.confluent.connect.avro.AvroConverter
       - CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL=https://schema-registry-cloud:8081
@@ -96,20 +96,20 @@ services:
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "Connect - Your hub for connecting Apache Kafka to all your systems"
-      io.zeelos.gatewayId: ${gateway.id}
+      io.zeelos.edgeId: ${edge.id}
 
   connect-leshan-asset:
     image: zeelos/kafka-connect-leshan-influxdb:0.3-SNAPSHOT
     environment:
       - CONNECT_BOOTSTRAP_SERVERS=SSL://kafka-cloud-1:9092,SSL://kafka-cloud-2:9092,SSL://kafka-cloud-3:9092
       - CONNECT_LISTENERS=https://0.0.0.0:8084
-      - CONNECT_GROUP_ID=zeelos-connect-${gateway.id}-leshan-asset-group
-      - CONNECT_CONFIG_STORAGE_TOPIC=zeelos-connect-${gateway.id}-leshan-asset-configs
+      - CONNECT_GROUP_ID=zeelos-connect-${edge.id}-leshan-asset-group
+      - CONNECT_CONFIG_STORAGE_TOPIC=zeelos-connect-${edge.id}-leshan-asset-configs
       - CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR=3
-      - CONNECT_OFFSET_STORAGE_TOPIC=zeelos-connect-${gateway.id}-leshan-asset-offsets
+      - CONNECT_OFFSET_STORAGE_TOPIC=zeelos-connect-${edge.id}-leshan-asset-offsets
       - CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR=3
       - CONNECT_OFFSET_FLUSH_INTERVAL_MS=10000
-      - CONNECT_STATUS_STORAGE_TOPIC=zeelos-connect-${gateway.id}-leshan-asset-status
+      - CONNECT_STATUS_STORAGE_TOPIC=zeelos-connect-${edge.id}-leshan-asset-status
       - CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=3
       - CONNECT_KEY_CONVERTER=io.confluent.connect.avro.AvroConverter
       - CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL=https://schema-registry-cloud:8081
@@ -189,7 +189,14 @@ services:
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "Connect - Your hub for connecting Apache Kafka to all your systems"
-      io.zeelos.gatewayId: ${gateway.id}
+      io.zeelos.edgeId: ${edge.id}
+
+kafka.jmx-exporter-javaagent-jar:
+  file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.3.1.jar
+kafka.jmx-exporter-zookeeper-config:
+  file: ../configs/prometheus/exporters/kafka/jmx-exporter-zookeeper-config.yml
+kafka.jmx-exporter-kafka-config:
+  file: ../configs/prometheus/exporters/kafka/jmx-exporter-kafka-config.yml
 
 secrets:
   kafka.connect-cloud.keystore.jks:

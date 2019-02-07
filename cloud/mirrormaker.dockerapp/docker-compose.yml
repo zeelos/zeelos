@@ -12,7 +12,7 @@ services:
       - MIRRORMAKER_ABORT_ON_SEND_FAILURE=true
       - MIRRORMAKER_OFFSET_COMMIT_INTERVAL=10000
       - MIRRORMAKER_NUM_STREAMS=1
-      - CONSUMER_BOOTSTRAP_SERVERS=SSL://kafka-gateway:9082
+      - CONSUMER_BOOTSTRAP_SERVERS=SSL://kafka-edge:9082
       - CONSUMER_GROUP_ID=mirrormaker_cloud_${gateway.id}
       - CONSUMER_AUTO_OFFSET_RESET=earliest
       - KAFKA_HEAP_OPTS=${mirrormaker.heap_opts}
@@ -32,9 +32,9 @@ services:
       - PRODUCER_SSL_KEY_PASSWORD=${ssl.keypass}
       - PRODUCER_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=
       - CONSUMER_SECURITY_PROTOCOL=SSL
-      - CONSUMER_SSL_TRUSTSTORE_LOCATION=/etc/kafka/secrets/kafka.client-gateway.truststore.jks
+      - CONSUMER_SSL_TRUSTSTORE_LOCATION=/etc/kafka/secrets/kafka.client-edge.truststore.jks
       - CONSUMER_SSL_TRUSTSTORE_PASSWORD=${ssl.truststorepass}
-      - CONSUMER_SSL_KEYSTORE_LOCATION=/etc/kafka/secrets/kafka.client-gateway.keystore.jks
+      - CONSUMER_SSL_KEYSTORE_LOCATION=/etc/kafka/secrets/kafka.client-edge.keystore.jks
       - CONSUMER_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
       - CONSUMER_SSL_KEY_PASSWORD=${ssl.keypass}
     secrets:
@@ -42,10 +42,10 @@ services:
         target: /etc/kafka/secrets/kafka.client-cloud.keystore.jks
       - source: kafka.client-cloud.truststore.jks
         target: /etc/kafka/secrets/kafka.client-cloud.truststore.jks
-      - source: kafka.client-gateway.keystore.jks
-        target: /etc/kafka/secrets/kafka.client-gateway.keystore.jks
-      - source: kafka.client-gateway.truststore.jks
-        target: /etc/kafka/secrets/kafka.client-gateway.truststore.jks
+      - source: kafka.client-edge.keystore.jks
+        target: /etc/kafka/secrets/kafka.client-edge.keystore.jks
+      - source: kafka.client-edge.truststore.jks
+        target: /etc/kafka/secrets/kafka.client-edge.truststore.jks
       - source: client_security_cloud.properties
         target: /etc/kafka/secrets/client_security_cloud.properties
       - source: client_security_gateway.properties
@@ -70,10 +70,10 @@ secrets:
     file: ./security/kafka.client-cloud.keystore.jks
   kafka.client-cloud.truststore.jks:
     file: ./security/kafka.client-cloud.truststore.jks
-  kafka.client-gateway.keystore.jks:
-    file: ./security/kafka.client-gateway.keystore.jks
-  kafka.client-gateway.truststore.jks:
-    file: ./security/kafka.client-gateway.truststore.jks
+  kafka.client-edge.keystore.jks:
+    file: ./security/kafka.client-edge.keystore.jks
+  kafka.client-edge.truststore.jks:
+    file: ./security/kafka.client-edge.truststore.jks
   client_security_cloud.properties:
     file: ./security/client_security_cloud.properties
   client_security_gateway.properties:
