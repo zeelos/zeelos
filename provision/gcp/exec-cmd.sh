@@ -1,25 +1,19 @@
 #!/bin/bash
 # set -x
 
+# the project id
 project="zeelos"
 
+# Google GCP region/zone
 region="europe-west3"
 zone="a"
 
+# used as prefix for resources
 network="$project-$region-$zone"
-ip_subnet="subnet-$network"
-ip_range="10.180.0.0/20"
 
-ip_vpn_internal="192.168.1.0/24"
-
+# Docker Swarm spec.
 managers=3
 workers=6
-manager_machine_type="n1-standard-1"
-worker_machine_type="n1-standard-1"
-bastion_machine_type="n1-highcpu-2"
-
-image="opensuse-leap-15"
-image_project="zeelos-io"
 
 cmd="$1"
 
