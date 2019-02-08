@@ -27,7 +27,7 @@ services:
       - https://schema-registry-edge:8071
       - iot.${edge.id}.observations
       - /opt/kafka-streams-leshan/state
-      - /etc/kafka/secrets/edge.properties
+      - /etc/kafka/secrets/client_security_edge.properties
     configs:
       - source: kstreams.jmx-exporter-javaagent-jar
         target: /etc/kafka/prometheus/jmx_prometheus_javaagent.jar
