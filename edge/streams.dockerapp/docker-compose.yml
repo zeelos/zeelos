@@ -20,6 +20,7 @@ services:
                   -Djavax.net.ssl.trustStorePassword=${ssl.truststorepass}
                   -Djavax.net.ssl.keyStore=/etc/kafka/secrets/kafka.client-edge.keystore.jks
                   -Djavax.net.ssl.keyStorePassword=${ssl.keystorepass}
+                  ${kstreams.heap_opts}
     command:
       - io.zeelos.leshan.kafka.streams.SimpleAnalyticsStreamsApp
       - kafka-edge:9082
@@ -70,6 +71,7 @@ services:
                   -Djavax.net.ssl.trustStorePassword=${ssl.truststorepass}
                   -Djavax.net.ssl.keyStore=/etc/kafka/secrets/kafka.client-edge.keystore.jks
                   -Djavax.net.ssl.keyStorePassword=${ssl.keystorepass}
+                  ${kstreams.heap_opts}                  
     command:
       - io.zeelos.leshan.kafka.streams.TemperatureStreamsApp
       - kafka-edge:9082
@@ -108,7 +110,7 @@ services:
 
 configs:
   kstreams.jmx-exporter-javaagent-jar:
-    file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.3.1.jar
+    file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.11.0.jar
   kstreams.jmx-exporter-kstreams-config:
     file: ../configs/prometheus/exporters/kafka/jmx-exporter-kstreams-config.yml
 

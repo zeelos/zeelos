@@ -20,7 +20,8 @@ services:
       - KAFKA_PRODUCER_LINGER_MS=0
       - KAFKA_BOOTSTRAP_SERVER=SSL://kafka-edge:9082
       - KAFKA_SCHEMA_REGISTRY_URL=https://schema-registry-edge:8071
-      - JAVA_OPTS=-Djava.rmi.server.hostname=leshan-server-kafka-edge -Dcom.sun.management.jmxremote.local.only=false
+      - JAVA_OPTS=-javaagent:/etc/java/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/java/prometheus/jmx-exporter-generic-config.yml
+                  -Djava.rmi.server.hostname=leshan-server-kafka-edge -Dcom.sun.management.jmxremote.local.only=false
                   -Dcom.sun.management.jmxremote.rmi.port=9590 -Dcom.sun.management.jmxremote.port=9590
                   -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                   -Dcom.sun.management.jmxremote.ssl=false ${leshan.heap_opts}
@@ -36,6 +37,12 @@ services:
                   -Djavax.net.ssl.keyStore=/etc/kafka/secrets/kafka.client-edge.keystore.jks
                   -Djavax.net.ssl.keyStorePassword=${ssl.keystorepass}
       - KAFKA_SSL_PROPERTIES_LOCATION=/etc/kafka/secrets/client_security_edge.properties
+    command: "-wp 80"
+    configs:
+      - source: java.jmx-exporter-javaagent-jar
+        target: /etc/java/prometheus/jmx_prometheus_javaagent.jar
+      - source: java.jmx-exporter-generic-config
+        target: /etc/java/prometheus/jmx-exporter-generic-config.yml
     secrets:
       - source: kafka.client-edge.keystore.jks
         target: /etc/kafka/secrets/kafka.client-edge.keystore.jks
@@ -49,9 +56,10 @@ services:
         target: /etc/kafka/secrets/client-edge.key
     networks:
       - edge
+      - monnet
     ports:
-      - published: 8080
-        target: 8080
+      - published: 80
+        target: 80
         mode: host
       - published: 5683
         target: 5683
@@ -74,12 +82,10 @@ services:
       io.zeelos.edgeId: ${edge.id}
 
 configs:
-  kafka.jmx-exporter-javaagent-jar:
-    file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.3.1.jar
-  kafka.jmx-exporter-zookeeper-config:
-    file: ../configs/prometheus/exporters/kafka/jmx-exporter-zookeeper-config.yml
-  kafka.jmx-exporter-kafka-config:
-    file: ../configs/prometheus/exporters/kafka/jmx-exporter-kafka-config.yml
+  java.jmx-exporter-javaagent-jar:
+    file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.11.0.jar
+  java.jmx-exporter-generic-config:
+    file: ../configs/prometheus/exporters/kafka/jmx-exporter-generic-config.yml
 
 secrets:
   kafka.client-edge.keystore.jks:

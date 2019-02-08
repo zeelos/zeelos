@@ -60,7 +60,7 @@ services:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "alertmanager - The Alertmanager handles alerts sent by client applications such as the Prometheus server"
 
-  unsee:
+  unsee-edge:
     image: cloudflare/unsee:v0.9.2
     networks:
       - monnet

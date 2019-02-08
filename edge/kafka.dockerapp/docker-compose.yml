@@ -53,7 +53,7 @@ services:
     environment:
       - KAFKA_BROKER_ID=1
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper-edge:2171
-      - KAFKA_ADVERTISED_LISTENERS=SSL://kafka-edge:9082
+      - KAFKA_ADVERTISED_LISTENERS=SSL://kafka-${edge.id}-edge:9082
       - KAFKA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-kafka-config.yml
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
       - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
@@ -78,6 +78,7 @@ services:
       - KAFKA_SSL_TRUSTSTORE_FILENAME=kafka.kafka-edge.truststore.jks
       - KAFKA_SSL_TRUSTSTORE_CREDENTIALS=kafka-edge_truststore_creds
       - KAFKA_SSL_CLIENT_AUTH=required
+      - KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=
     configs:
       - source: kafka.jmx-exporter-javaagent-jar
         target: /etc/kafka/prometheus/jmx_prometheus_javaagent.jar
@@ -116,7 +117,7 @@ services:
   schema-registry-edge:
     image: ${schema.image}:${schema.version}
     environment:
-      - SCHEMA_REGISTRY_HOST_NAME=schema-registry-edge
+      - SCHEMA_REGISTRY_HOST_NAME=schema-registry-${edge.id}-edge
       - SCHEMA_REGISTRY_LISTENERS=https://0.0.0.0:8071
       - SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS=SSL://kafka-cloud-1:9092,SSL://kafka-cloud-2:9092,SSL://kafka-cloud-3:9092
       - SCHEMA_REGISTRY_MASTER_ELIGIBILIY=false
@@ -145,6 +146,7 @@ services:
       - SCHEMA_REGISTRY_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
       - SCHEMA_REGISTRY_SSL_KEY_PASSWORD=${ssl.keypass}
       - SCHEMA_REGISTRY_SSL_CLIENT_AUTH=true
+      - SCHEMA_REGISTRY_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=
       - SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL=INFO
     configs:
       - source: kafka.jmx-exporter-javaagent-jar
@@ -158,6 +160,7 @@ services:
         target: /etc/kafka/secrets/kafka.schema-registry-edge.truststore.jks
     networks:
       - edge
+      - monnet
     ports:
       - published: 8071
         target: 8071
@@ -177,7 +180,7 @@ services:
   rest-edge:
     image: ${rest.image}:${rest.version}
     environment:
-      - KAFKA_REST_HOST_NAME=rest-edge
+      - KAFKA_REST_HOST_NAME=rest-${edge.id}-edge
       - KAFKA_REST_LISTENERS=https://0.0.0.0:8072
       - KAFKA_REST_ZOOKEEPER_CONNECT=zookeeper-edge:2171
       - KAFKA_REST_BOOTSTRAP_SERVERS=SSL://kafka-edge:9082
@@ -199,12 +202,14 @@ services:
       - KAFKA_REST_CLIENT_SSL_KEYSTORE_LOCATION=/etc/kafka/secrets/kafka.rest-edge.keystore.jks
       - KAFKA_REST_CLIENT_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
       - KAFKA_REST_CLIENT_SSL_KEY_PASSWORD=${ssl.keypass}
+      - KAFKA_REST_CLIENT_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=
       - KAFKA_REST_SSL_TRUSTSTORE_LOCATION=/etc/kafka/secrets/kafka.rest-edge.truststore.jks
       - KAFKA_REST_SSL_TRUSTSTORE_PASSWORD=${ssl.truststorepass}
       - KAFKA_REST_SSL_KEYSTORE_LOCATION=/etc/kafka/secrets/kafka.rest-edge.keystore.jks
       - KAFKA_REST_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
       - KAFKA_REST_SSL_KEY_PASSWORD=${ssl.keypass}
       - KAFKA_REST_SSL_CLIENT_AUTH=true
+      - KAFKA_REST_SSL_CLIENT_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=
     configs:
       - source: kafka.jmx-exporter-javaagent-jar
         target: /etc/kafka/prometheus/jmx_prometheus_javaagent.jar
@@ -217,6 +222,7 @@ services:
         target: /etc/kafka/secrets/kafka.rest-edge.truststore.jks
     networks:
       - edge
+      - monnet
     ports:
       - published: 8072
         target: 8072
@@ -290,7 +296,7 @@ services:
 
 configs:
   kafka.jmx-exporter-javaagent-jar:
-    file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.3.1.jar
+    file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.11.0.jar
   kafka.jmx-exporter-zookeeper-config:
     file: ../configs/prometheus/exporters/kafka/jmx-exporter-zookeeper-config.yml
   kafka.jmx-exporter-kafka-config:
