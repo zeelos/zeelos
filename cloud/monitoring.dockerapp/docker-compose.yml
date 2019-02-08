@@ -31,7 +31,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-5
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-5
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "Prometheus - From metrics to insight, Power your metrics and alerting with a leading open-source monitoring solution"
@@ -52,7 +52,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-5
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-5
     configs:
       - source: alertmanager.config
         target: /etc/alertmanager/config.yml
@@ -73,7 +73,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-5
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-5
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "unsee - Alert dashboard for Prometheus Alertmanager"

@@ -1,15 +1,18 @@
 project: 
     name: zeelos
-    region: europe
-    zone: west3-swarm
+    region: europe-west3
+    zone: a
 
 ssl:
   truststorepass: itsasecret
   keystorepass: itsasecret
   keypass: itsasecret
 
-gateway:
+edge:
   id: FILL ME
+
+compression:
+  type: snappy
 
 mirrormaker:
   image: zeelos/kafka-mirrormaker

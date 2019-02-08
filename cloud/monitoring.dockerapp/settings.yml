@@ -1,7 +1,7 @@
 project: 
     name: zeelos
-    region: europe
-    zone: west3-swarm
+    region: europe-west3
+    zone: a
 
 prometheus:
   retention_days: 365d

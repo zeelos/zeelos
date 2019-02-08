@@ -8,13 +8,14 @@ services:
   kafka-mirrormaker:
     image: ${mirrormaker.image}:${mirrormaker.version}
     environment:
-      - MIRRORMAKER_WHITE_LIST=^iot.${gateway.id}.((?!req).)*$$
+      - MIRRORMAKER_WHITE_LIST=^iot.${edge.id}.((?!req).)*$$
       - MIRRORMAKER_ABORT_ON_SEND_FAILURE=true
       - MIRRORMAKER_OFFSET_COMMIT_INTERVAL=10000
       - MIRRORMAKER_NUM_STREAMS=1
-      - CONSUMER_BOOTSTRAP_SERVERS=SSL://kafka-edge:9082
-      - CONSUMER_GROUP_ID=mirrormaker_cloud_${gateway.id}
+      - CONSUMER_BOOTSTRAP_SERVERS=SSL://kafka-${edge.id}-edge:9082
+      - CONSUMER_GROUP_ID=mirrormaker_cloud_${edge.id}
       - CONSUMER_AUTO_OFFSET_RESET=earliest
+      - KAFKA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-kafka-config.yml
       - KAFKA_HEAP_OPTS=${mirrormaker.heap_opts}
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
@@ -23,7 +24,7 @@ services:
                        -Dcom.sun.management.jmxremote.rmi.port=9574
                        -Dcom.sun.management.jmxremote.port=9574
       - PRODUCER_BOOTSTRAP_SERVERS=SSL://kafka-cloud-1:9092,SSL://kafka-cloud-2:9092,SSL://kafka-cloud-3:9092
-      - PRODUCER_COMPRESSION_TYPE=snappy
+      - PRODUCER_COMPRESSION_TYPE=${compression.type}
       - PRODUCER_SECURITY_PROTOCOL=SSL
       - PRODUCER_SSL_TRUSTSTORE_LOCATION=/etc/kafka/secrets/kafka.client-cloud.truststore.jks
       - PRODUCER_SSL_TRUSTSTORE_PASSWORD=${ssl.truststorepass}
@@ -37,6 +38,12 @@ services:
       - CONSUMER_SSL_KEYSTORE_LOCATION=/etc/kafka/secrets/kafka.client-edge.keystore.jks
       - CONSUMER_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
       - CONSUMER_SSL_KEY_PASSWORD=${ssl.keypass}
+      - CONSUMER_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=
+    configs:
+      - source: kafka.jmx-exporter-javaagent-jar
+        target: /etc/kafka/prometheus/jmx_prometheus_javaagent.jar
+      - source: kafka.jmx-exporter-kafka-config
+        target: /etc/kafka/prometheus/jmx-exporter-kafka-config.yml
     secrets:
       - source: kafka.client-cloud.keystore.jks
         target: /etc/kafka/secrets/kafka.client-cloud.keystore.jks
@@ -48,10 +55,11 @@ services:
         target: /etc/kafka/secrets/kafka.client-edge.truststore.jks
       - source: client_security_cloud.properties
         target: /etc/kafka/secrets/client_security_cloud.properties
-      - source: client_security_gateway.properties
-        target: /etc/kafka/secrets/client_security_gateway.properties
+      - source: client_security_edge.properties
+        target: /etc/kafka/secrets/client_security_edge.properties
     networks:
       - cloudnet
+      - monnet
     ports:
       - published: 9574
         target: 9574
@@ -59,27 +67,36 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-4
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-4
     labels:
-      io.zeelos.app: "zeelos"
+      io.zeelos.app: ${project.name}
       io.zeelos.role: "Kafka MirrorMaker - A stand-alone tool for copying data between two Apache Kafka clusters"
-      io.zeelos.gatewayId: ${gateway.id}
+      io.zeelos.edgeId: ${edge.id}
+
+configs:
+  kafka.jmx-exporter-javaagent-jar:
+    file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.11.0.jar
+  kafka.jmx-exporter-kafka-config:
+    file: ../configs/prometheus/exporters/kafka/jmx-exporter-kafka-config.yml
 
 secrets:
   kafka.client-cloud.keystore.jks:
-    file: ./security/kafka.client-cloud.keystore.jks
+    file: ../security/kafka.client-cloud.keystore.jks
   kafka.client-cloud.truststore.jks:
-    file: ./security/kafka.client-cloud.truststore.jks
+    file: ../security/kafka.client-cloud.truststore.jks
   kafka.client-edge.keystore.jks:
-    file: ./security/kafka.client-edge.keystore.jks
+    file: ../security/kafka.client-edge.keystore.jks
   kafka.client-edge.truststore.jks:
-    file: ./security/kafka.client-edge.truststore.jks
+    file: ../security/kafka.client-edge.truststore.jks
   client_security_cloud.properties:
-    file: ./security/client_security_cloud.properties
-  client_security_gateway.properties:
-    file: ./security/client_security_gateway.properties
+    file: ../security/client_security_cloud.properties
+  client_security_edge.properties:
+    file: ../security/client_security_edge.properties
 
 networks:
+  monnet:
+    external: true
+    name: monnet
   cloudnet:
     external: true
     name: cloudnet

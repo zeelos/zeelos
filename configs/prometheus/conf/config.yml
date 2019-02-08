@@ -63,24 +63,24 @@ scrape_configs:
       type: 'A'
       port: 8080
 
-  - job_name: 'zookeeper-1'
+  - job_name: 'zookeeper-cloud-1'
     dns_sd_configs:
     - names:
-      - 'tasks.zookeeper-1'
+      - 'tasks.zookeeper-cloud-1'
       type: 'A'
       port: 8080
 
-  - job_name: 'zookeeper-2'
+  - job_name: 'zookeeper-cloud-2'
     dns_sd_configs:
     - names:
-      - 'tasks.zookeeper-2'
+      - 'tasks.zookeeper-cloud-2'
       type: 'A'
       port: 8080
 
-  - job_name: 'zookeeper-3'
+  - job_name: 'zookeeper-cloud-3'
     dns_sd_configs:
     - names:
-      - 'tasks.zookeeper-3'
+      - 'tasks.zookeeper-cloud-3'
       type: 'A'
       port: 8080
 
@@ -88,6 +88,13 @@ scrape_configs:
     dns_sd_configs:
     - names:
       - 'tasks.schema-registry-cloud'
+      type: 'A'
+      port: 8080
+
+  - job_name: 'orientdb'
+    dns_sd_configs:
+    - names:
+      - 'tasks.orientdb'
       type: 'A'
       port: 8080
 

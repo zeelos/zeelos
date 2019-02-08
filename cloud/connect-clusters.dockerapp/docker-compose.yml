@@ -62,7 +62,8 @@ services:
       - CONNECT_CONSUMER_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
       - CONNECT_CONSUMER_SSL_KEY_PASSWORD=${ssl.keypass}
       - CONNECT_CONSUMER_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=
-      - KAFKA_OPTS=-Djavax.net.ssl.trustStore=/etc/kafka/secrets/kafka.connect-cloud.truststore.jks
+      - KAFKA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-kafka-config.yml
+                   -Djavax.net.ssl.trustStore=/etc/kafka/secrets/kafka.connect-cloud.truststore.jks
                    -Djavax.net.ssl.trustStorePassword=${ssl.truststorepass}
                    -Djavax.net.ssl.keyStore=/etc/kafka/secrets/kafka.connect-cloud.keystore.jks
                    -Djavax.net.ssl.keyStorePassword=${ssl.keystorepass}
@@ -70,6 +71,11 @@ services:
                              -Djavax.net.ssl.trustStorePassword=${ssl.truststorepass}
                              -Djavax.net.ssl.keyStore=/etc/kafka/secrets/kafka.connect-cloud.keystore.jks
                              -Djavax.net.ssl.keyStorePassword=${ssl.keystorepass}
+    configs:
+      - source: kafka.jmx-exporter-javaagent-jar
+        target: /etc/kafka/prometheus/jmx_prometheus_javaagent.jar
+      - source: kafka.jmx-exporter-kafka-config
+        target: /etc/kafka/prometheus/jmx-exporter-kafka-config.yml
     secrets:
       - source: kafka.connect-cloud.keystore.jks
         target: /etc/kafka/secrets/kafka.connect-cloud.keystore.jks
@@ -81,6 +87,7 @@ services:
         target: /etc/kafka/secrets/client-cloud.key
     networks:
       - cloudnet
+      - monnet
     ports:
       - published: 8083
         target: 8083
@@ -92,7 +99,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-6
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-6
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "Connect - Your hub for connecting Apache Kafka to all your systems"
@@ -155,7 +162,8 @@ services:
       - CONNECT_CONSUMER_SSL_KEYSTORE_PASSWORD=${ssl.keystorepass}
       - CONNECT_CONSUMER_SSL_KEY_PASSWORD=${ssl.keypass}
       - CONNECT_CONSUMER_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=
-      - KAFKA_OPTS=-Djavax.net.ssl.trustStore=/etc/kafka/secrets/kafka.connect-cloud.truststore.jks
+      - KAFKA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-kafka-config.yml
+                   -Djavax.net.ssl.trustStore=/etc/kafka/secrets/kafka.connect-cloud.truststore.jks
                    -Djavax.net.ssl.trustStorePassword=${ssl.truststorepass}
                    -Djavax.net.ssl.keyStore=/etc/kafka/secrets/kafka.connect-cloud.keystore.jks
                    -Djavax.net.ssl.keyStorePassword=${ssl.keystorepass}
@@ -163,6 +171,11 @@ services:
                              -Djavax.net.ssl.trustStorePassword=${ssl.truststorepass}
                              -Djavax.net.ssl.keyStore=/etc/kafka/secrets/kafka.connect-cloud.keystore.jks
                              -Djavax.net.ssl.keyStorePassword=${ssl.keystorepass}
+    configs:
+      - source: kafka.jmx-exporter-javaagent-jar
+        target: /etc/kafka/prometheus/jmx_prometheus_javaagent.jar
+      - source: kafka.jmx-exporter-kafka-config
+        target: /etc/kafka/prometheus/jmx-exporter-kafka-config.yml    
     secrets:
       - source: kafka.connect-cloud.keystore.jks
         target: /etc/kafka/secrets/kafka.connect-cloud.keystore.jks
@@ -174,6 +187,7 @@ services:
         target: /etc/kafka/secrets/client-cloud.key
     networks:
       - cloudnet
+      - monnet
     ports:
       - published: 8084
         target: 8084
@@ -185,30 +199,32 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-6
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-6
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "Connect - Your hub for connecting Apache Kafka to all your systems"
       io.zeelos.edgeId: ${edge.id}
 
-kafka.jmx-exporter-javaagent-jar:
-  file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.3.1.jar
-kafka.jmx-exporter-zookeeper-config:
-  file: ../configs/prometheus/exporters/kafka/jmx-exporter-zookeeper-config.yml
-kafka.jmx-exporter-kafka-config:
-  file: ../configs/prometheus/exporters/kafka/jmx-exporter-kafka-config.yml
+configs:
+  kafka.jmx-exporter-javaagent-jar:
+    file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.11.0.jar
+  kafka.jmx-exporter-kafka-config:
+    file: ../configs/prometheus/exporters/kafka/jmx-exporter-kafka-config.yml
 
 secrets:
   kafka.connect-cloud.keystore.jks:
-    file: ./security/kafka.connect-cloud.keystore.jks
+    file: ../security/kafka.connect-cloud.keystore.jks
   kafka.connect-cloud.truststore.jks:
-    file: ./security/kafka.connect-cloud.truststore.jks
+    file: ../security/kafka.connect-cloud.truststore.jks
   client-cloud.certificate.pem:
-    file: ./security/client-cloud.certificate.pem
+    file: ../security/client-cloud.certificate.pem
   client-cloud.key:
-    file: ./security/client-cloud.key
+    file: ../security/client-cloud.key
 
 networks:
+  monnet:
+    external: true
+    name: monnet
   cloudnet:
     external: true
     name: cloudnet

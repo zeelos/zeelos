@@ -11,7 +11,8 @@ services:
       - orientdb-data:/orientdb/databases
     environment:
       - ORIENTDB_ROOT_PASSWORD=${orientdb.rootpass}
-      - JAVA_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
+      - JAVA_OPTS=-javaagent:/etc/java/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/java/prometheus/jmx-exporter-generic-config.yml
+                  -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                   -Dcom.sun.management.jmxremote.ssl=false
                   -Djava.rmi.server.hostname=orientdb
                   -Dcom.sun.management.jmxremote.local.only=false
@@ -20,6 +21,7 @@ services:
       - ORIENTDB_SETTINGS=-Denvironment.dumpCfgAtStartup=true -Dnetwork.token.expireTimeout=10080 -Dnetwork.socketTimeout=15000
     networks:
       - cloudnet
+      - monnet
     ports:
       - published: 2424
         target: 2424
@@ -30,10 +32,15 @@ services:
       - published: 9450
         target: 9450
         mode: host
+    configs:
+      - source: java.jmx-exporter-javaagent-jar
+        target: /etc/java/prometheus/jmx_prometheus_javaagent.jar
+      - source: java.jmx-exporter-generic-config
+        target: /etc/java/prometheus/jmx-exporter-generic-config.yml
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-5
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-5
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "OrientDB - Distributed Multi-Model and Graph Database"
@@ -55,7 +62,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-5
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-5
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "InfluxDB - The Platform for Time-Series Data"
@@ -78,10 +85,16 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-5
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-5
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "Grafana - Beautiful metric & analytic dashboards"
+
+configs:
+  java.jmx-exporter-javaagent-jar:
+    file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.11.0.jar
+  java.jmx-exporter-generic-config:
+    file: ../configs/prometheus/exporters/kafka/jmx-exporter-generic-config.yml
 
 volumes:
   orientdb-data:

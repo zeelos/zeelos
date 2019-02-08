@@ -20,7 +20,7 @@ services:
       - KAFKA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-zookeeper-config.yml
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
-                       -Djava.rmi.server.hostname=${project.name}-${project.region}-${project.zone}-worker-1
+                       -Djava.rmi.server.hostname=zookeeper-cloud-1
                        -Dcom.sun.management.jmxremote.local.only=false
                        -Dcom.sun.management.jmxremote.rmi.port=9580
                        -Dcom.sun.management.jmxremote.port=9580
@@ -43,7 +43,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-1
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-1
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "ZooKeeper - An open-source server which enables highly reliable distributed coordination"
@@ -63,7 +63,7 @@ services:
       - KAFKA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-zookeeper-config.yml
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
-                       -Djava.rmi.server.hostname=${project.name}-${project.region}-${project.zone}-worker-2
+                       -Djava.rmi.server.hostname=zookeeper-cloud-2
                        -Dcom.sun.management.jmxremote.local.only=false
                        -Dcom.sun.management.jmxremote.rmi.port=9580
                        -Dcom.sun.management.jmxremote.port=9580
@@ -86,7 +86,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-2
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-2
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "ZooKeeper - An open-source server which enables highly reliable distributed coordination"
@@ -106,7 +106,7 @@ services:
       - KAFKA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-zookeeper-config.yml
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
-                       -Djava.rmi.server.hostname=${project.name}-${project.region}-${project.zone}-worker-3
+                       -Djava.rmi.server.hostname=zookeeper-cloud-3
                        -Dcom.sun.management.jmxremote.local.only=false
                        -Dcom.sun.management.jmxremote.rmi.port=9580
                        -Dcom.sun.management.jmxremote.port=9580
@@ -129,7 +129,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-3
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-3
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "ZooKeeper - An open-source server which enables highly reliable distributed coordination"
@@ -197,7 +197,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-1
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-1
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "Kafka - A distributed streaming platform"
@@ -265,7 +265,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-2
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-2
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "Kafka - A distributed streaming platform"
@@ -333,7 +333,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-3
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-3
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "Kafka - A distributed streaming platform"
@@ -393,7 +393,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-4
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-4
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "Schema Registry - Schema registry for Apache Kafka"
@@ -452,7 +452,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-4
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-4
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "Kafka REST Proxy - A RESTful interface to a Kafka cluster"
@@ -504,14 +504,14 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-worker-4
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-4
     labels:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "Kafka Exporter - Kafka exporter for Prometheus (non-jmx)"
 
 configs:
   kafka.jmx-exporter-javaagent-jar:
-    file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.3.1.jar
+    file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.11.0.jar
   kafka.jmx-exporter-zookeeper-config:
     file: ../configs/prometheus/exporters/kafka/jmx-exporter-zookeeper-config.yml
   kafka.jmx-exporter-kafka-config:
