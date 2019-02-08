@@ -174,7 +174,8 @@ gcloud compute firewall-rules create "$network-allow-kafka-broker-zookeeper" \
 echo "creating firewall rule (allow:kafka-broker-zookeeper-edge).."
 gcloud compute firewall-rules create "$network-allow-kafka-broker-zookeeper-edge" \
 --network "$network" \
---target-tags="worker" \
+--source-ranges="$ip_vpn_internal,$ip_range" \
+--target-tags="worker,bastion" \
 --allow tcp:2171,tcp:9575,tcp:9082,tcp:9571
 
 echo "creating firewall rule (allow:kafka-schema-registry).."

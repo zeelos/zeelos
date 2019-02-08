@@ -90,6 +90,27 @@ scrape_configs:
       - 'tasks.schema-registry-cloud'
       type: 'A'
       port: 8080
+      
+  - job_name: 'kafka-mirrormaker'
+    dns_sd_configs:
+    - names:
+      - 'tasks.kafka-mirrormaker'
+      type: 'A'
+      port: 8080
+
+  - job_name: 'connect-influxdb'
+    dns_sd_configs:
+    - names:
+      - 'tasks.connect-influxdb'
+      type: 'A'
+      port: 8080
+
+  - job_name: 'connect-leshan-asset'
+    dns_sd_configs:
+    - names:
+      - 'tasks.connect-leshan-asset'
+      type: 'A'
+      port: 8080
 
   - job_name: 'orientdb'
     dns_sd_configs:

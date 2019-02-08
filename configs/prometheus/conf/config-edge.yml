@@ -70,10 +70,24 @@ scrape_configs:
       type: 'A'
       port: 8080
 
+  - job_name: 'kafka-mirrormaker-edge'
+    dns_sd_configs:
+    - names:
+      - 'tasks.kafka-mirrormaker-edge'
+      type: 'A'
+      port: 8080
+
   - job_name: 'kafka-exporter-edge'
     dns_sd_configs:
     - names:
       - 'tasks.kafka-exporter-edge'
+      type: 'A'
+      port: 8080
+
+  - job_name: 'leshan-server-kafka-edge'
+    dns_sd_configs:
+    - names:
+      - 'tasks.leshan-server-kafka-edge'
       type: 'A'
       port: 8080
 
