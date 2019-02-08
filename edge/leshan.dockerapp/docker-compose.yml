@@ -21,7 +21,7 @@ services:
       - KAFKA_BOOTSTRAP_SERVER=SSL://kafka-edge:9082
       - KAFKA_SCHEMA_REGISTRY_URL=https://schema-registry-edge:8071
       - JAVA_OPTS=-javaagent:/etc/java/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/java/prometheus/jmx-exporter-generic-config.yml
-                  -Djava.rmi.server.hostname=leshan-server-kafka-edge -Dcom.sun.management.jmxremote.local.only=false
+                  -Djava.rmi.server.hostname=leshan-server-kafka-${edge.id}-edge -Dcom.sun.management.jmxremote.local.only=false
                   -Dcom.sun.management.jmxremote.rmi.port=9590 -Dcom.sun.management.jmxremote.port=9590
                   -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                   -Dcom.sun.management.jmxremote.ssl=false ${leshan.heap_opts}

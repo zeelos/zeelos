@@ -17,7 +17,7 @@ services:
       - KAFKA_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-zookeeper-config.yml
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
-                       -Djava.rmi.server.hostname=zookeeper-edge
+                       -Djava.rmi.server.hostname=zookeeper-${edge.id}-edge
                        -Dcom.sun.management.jmxremote.local.only=false
                        -Dcom.sun.management.jmxremote.rmi.port=9575
                        -Dcom.sun.management.jmxremote.port=9575
@@ -67,7 +67,7 @@ services:
       - KAFKA_HEAP_OPTS=${kafka.heap_opts}
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
-                       -Djava.rmi.server.hostname=kafka-edge
+                       -Djava.rmi.server.hostname=kafka-${edge.id}-edge
                        -Dcom.sun.management.jmxremote.local.only=false
                        -Dcom.sun.management.jmxremote.rmi.port=9571
                        -Dcom.sun.management.jmxremote.port=9571
@@ -129,7 +129,7 @@ services:
       - SCHEMA_REGISTRY_HEAP_OPTS=${schema.heap_opts}
       - SCHEMA_REGISTRY_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
-                       -Djava.rmi.server.hostname=schema-registry-edge
+                       -Djava.rmi.server.hostname=schema-registry-${edge.id}-edge
                        -Dcom.sun.management.jmxremote.local.only=false
                        -Dcom.sun.management.jmxremote.rmi.port=9572
                        -Dcom.sun.management.jmxremote.port=9572
@@ -192,7 +192,7 @@ services:
       - KAFKAREST_HEAP_OPTS=${rest.heap_opts}
       - KAFKAREST_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
-                       -Djava.rmi.server.hostname=rest-edge
+                       -Djava.rmi.server.hostname=rest-${edge.id}-edge
                        -Dcom.sun.management.jmxremote.local.only=false
                        -Dcom.sun.management.jmxremote.rmi.port=9573
                        -Dcom.sun.management.jmxremote.port=9573

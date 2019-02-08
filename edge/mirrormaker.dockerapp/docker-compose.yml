@@ -21,7 +21,7 @@ services:
       - KAFKA_HEAP_OPTS=${mirrormaker.heap_opts}
       - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
                        -Dcom.sun.management.jmxremote.ssl=false
-                       -Djava.rmi.server.hostname=kafka-mirrormaker-edge
+                       -Djava.rmi.server.hostname=kafka-mirrormaker-${edge.id}-edge
                        -Dcom.sun.management.jmxremote.local.only=false
                        -Dcom.sun.management.jmxremote.rmi.port=9564
                        -Dcom.sun.management.jmxremote.port=9564
