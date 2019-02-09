@@ -162,7 +162,8 @@ gcloud compute firewall-rules create "$network-allow-portainer-ui" \
 echo "creating firewall rule (allow:portainer-agent).."
 gcloud compute firewall-rules create "$network-allow-portainer-agent" \
 --network "$network" \
---target-tags="docker" \
+--source-ranges="$ip_vpn_internal,$ip_range" \
+--target-tags="docker,bastion" \
 --allow tcp:9001
 
 echo "creating firewall rule (allow:kafka-broker-zookeeper).."

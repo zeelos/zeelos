@@ -5,6 +5,28 @@ version: '3.6'
 
 services:
 
+  agent-edge:
+    image: portainer/agent:1.2.1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/docker/volumes:/var/lib/docker/volumes
+    environment:
+      AGENT_CLUSTER_ADDR: tasks.agent-edge
+      # AGENT_PORT: 9001
+      # LOG_LEVEL: debug
+    networks:
+      - agent_edge_network
+    ports:
+      - published: 9001
+        target: 9001
+        protocol: tcp
+        mode: host
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.platform.os == linux        
+
   prometheus-edge:
     image: prom/prometheus:v2.7.1
     volumes:
@@ -153,3 +175,7 @@ networks:
   monnet:
     external: true
     name: monnet
+  agent_edge_network:
+    driver: overlay
+    attachable: true
+
