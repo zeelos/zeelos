@@ -16,5 +16,5 @@ edge:
 
 leshan:
   image: zeelos/leshan-server-kafka
-  version: 0.5-SNAPSHOT
+  version: 0.6-SNAPSHOT
   heap_opts: -Xmx256M -Xms256M
