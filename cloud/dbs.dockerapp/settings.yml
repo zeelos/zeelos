@@ -5,12 +5,12 @@ project:
     
 orientdb:
   image: zeelos/orientdb
-  version: 3.0.14-tp3-with-zeelosdb
+  version: 3.0.15-tp3-with-zeelosdb
   rootpass: secret
 
 influxdb:
   image: zeelos/influxdb
-  version: 1.7.3-with-zeelosdb
+  version: 1.7.4-with-zeelosdb
   
 grafana:
   image: zeelos/grafana
