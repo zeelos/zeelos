@@ -2,7 +2,7 @@
 # set -x
 
 # the project id
-project="zeelos"
+project="zeelos-234311"
 
 # Google GCP region/zone
 region="europe-west3"
@@ -79,7 +79,7 @@ gcloud --quiet compute routers delete "$network-nat-router"
 
 for id in $(seq 1 $managers); do    
     echo "deleting manager '$network-swarm-manager-$id'.."
-    gcloud --quiet compute instances delete "$network-swarm-manager-$id"
+    gcloud --quiet compute instances delete "$network-swarm-manager-$id" --zone="$region-$zone"
 
     echo "deleting static ip for manager '$network-swarm-manager-ip-$id'.."
     gcloud --quiet compute addresses delete "$network-swarm-manager-ip-$id"
@@ -87,14 +87,14 @@ done
 
 for id in $(seq 1 $workers); do    
     echo "deleting worker '$network-swarm-worker-$id'.."
-    gcloud --quiet compute instances delete "$network-swarm-worker-$id"
+    gcloud --quiet compute instances delete "$network-swarm-worker-$id" --zone="$region-$zone"
 
     echo "deleting static ip for worker '$network-swarm-worker-ip-$id'.."
     gcloud --quiet compute addresses delete "$network-swarm-worker-ip-$id"
 done
 
 echo "deleting bastion host '$network-bastion-host'.."
-gcloud --quiet compute instances delete "$network-bastion-host"
+gcloud --quiet compute instances delete "$network-bastion-host" --zone="$region-$zone"
 
 echo "deleting static ip for bastion '$network-bastion-host-ip'.."
 gcloud --quiet compute addresses delete "$network-bastion-host-ip"

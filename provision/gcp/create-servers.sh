@@ -2,7 +2,7 @@
 # set -x
 
 # the project id
-project="zeelos"
+project="zeelos-234311"
 
 # Google GCP region/zone
 region="europe-west3"
@@ -14,7 +14,7 @@ ip_subnet="subnet-$network"
 ip_range="10.180.0.0/20"
 
 # VPN network
-ip_vpn_external="94.64.15.199"
+ip_vpn_external="94.64.15.45"
 ip_vpn_internal="192.168.1.0/24"
 
 # Docker Swarm spec.
@@ -34,8 +34,8 @@ worker_cpu="2"
 worker_mem="3840MB"
 
 # base Linux image OS used on all hosts
-image="opensuse-leap-15"
-image_project="zeelos-io"
+image="debian-9-stretch"
+image_project="zeelos-234311"
 
 # create network and subnet
 echo "creating network '$network'.."
