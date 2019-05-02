@@ -1,7 +1,5 @@
 project: 
-    name: zeelos
-    region: europe-west3
-    zone: a
+    name: zeelos-234311
 
 edge:
   id: FILL ME

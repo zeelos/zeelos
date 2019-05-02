@@ -126,9 +126,9 @@ scrape_configs:
       type: 'A'
       port: 8080
 
-  - job_name: 'kafka-exporter'
+  - job_name: 'kafka-exporter-cloud'
     dns_sd_configs:
     - names:
-      - 'tasks.kafka-exporter'
+      - 'tasks.kafka-exporter-cloud'
       type: 'A'
       port: 8080

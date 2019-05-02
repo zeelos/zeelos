@@ -14,7 +14,7 @@ ip_subnet="subnet-$network"
 ip_range="10.180.0.0/20"
 
 # VPN network
-ip_vpn_external="94.64.15.45"
+ip_vpn_external="94.66.31.27"
 ip_vpn_internal="192.168.1.0/24"
 
 # Docker Swarm spec.
@@ -233,11 +233,19 @@ gcloud compute firewall-rules create "$network-allow-docker-metrics" \
 --target-tags="docker" \
 --allow tcp:9323
 
-echo "creating firewall rule (allow:prom-alertm-unsee-cadvisor).."
-gcloud compute firewall-rules create "$network-allow-prom-alertm-unsee-cadvisor" \
+echo "creating firewall rule (allow:prom-alertm-cadvisor).."
+gcloud compute firewall-rules create "$network-allow-prom-alertm-cadvisor" \
 --network "$network" \
 --target-tags="worker" \
 --allow tcp:9091,tcp:9093,tcp:9094,tcp:8090
+
+echo "creating firewall rule (allow:prom-alertm-cadvisor-edge).."
+gcloud compute firewall-rules create "$network-allow-prom-alertm-cadvisor-edge" \
+--network "$network" \
+--source-ranges="$ip_vpn_internal,$ip_range" \
+--target-tags="worker,bastion" \
+--allow tcp:9091,tcp:9093,tcp:9094,tcp:8090
+
 
 echo "creating route to VPN internal hosts.."
 gcloud compute routes create "$network-route-to-vpn-internal-hosts" \

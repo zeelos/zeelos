@@ -1,0 +1,10 @@
+project: 
+    name: zeelos-234311
+    region: europe-west3
+    zone: a
+    
+orientdb:
+  rootpass: secret
+  
+grafana:
+  rootpass: secret

@@ -1,7 +1,5 @@
 project: 
-    name: zeelos
-    region: europe-west3
-    zone: a
+    name: zeelos-234311
 
 ssl:
   truststorepass: itsasecret
@@ -12,6 +10,4 @@ edge:
   id: FILL ME
 
 kstreams:
-  image: zeelos/kafka-streams-leshan
-  version: 0.3-SNAPSHOT
   heap_opts: -Xmx256M -Xms256M

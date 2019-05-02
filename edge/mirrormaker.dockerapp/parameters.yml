@@ -1,7 +1,5 @@
 project: 
-    name: zeelos
-    region: europe-west3
-    zone: a
+    name: zeelos-234311
 
 ssl:
   truststorepass: itsasecret
@@ -15,6 +13,4 @@ compression:
   type: snappy
 
 mirrormaker:
-  image: zeelos/kafka-mirrormaker
-  version: 5.1.0
   heap_opts: -Xms128M -Xmx128M

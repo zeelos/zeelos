@@ -1,0 +1,21 @@
+project: 
+    name: zeelos-234311
+    region: europe-west3
+    zone: a
+
+ssl:
+  truststorepass: itsasecret
+  keystorepass: itsasecret
+  keypass: itsasecret
+
+zookeeper:
+  heap_opts: -Xmx512M -Xms512M
+
+kafka:
+  heap_opts: -Xmx1G -Xms1G
+
+schema:
+  heap_opts: -Xmx512M
+
+rest:
+  heap_opts: -Xmx256M

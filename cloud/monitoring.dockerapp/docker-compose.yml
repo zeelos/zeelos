@@ -4,7 +4,6 @@
 version: '3.6'
 
 services:
-
   agent:
     image: portainer/agent:1.2.1
     volumes:
@@ -23,7 +22,7 @@ services:
           - node.platform.os == linux
 
   portainer:
-    image: portainer/portainer:1.20.1
+    image: portainer/portainer:1.20.2
     volumes:
       - portainer-data:/data
     command: -H tcp://tasks.agent:9001 --tlsskipverify
@@ -39,7 +38,7 @@ services:
           - node.role == manager
 
   prometheus:
-    image: prom/prometheus:v2.7.1
+    image: prom/prometheus:master
     volumes:
       - prometheus-data:/prometheus
     command:
@@ -70,7 +69,7 @@ services:
       io.zeelos.role: "Prometheus - From metrics to insight, Power your metrics and alerting with a leading open-source monitoring solution"
 
   alertmanager:
-    image: prom/alertmanager:v0.15.3
+    image: prom/alertmanager:master
     volumes:
       - alertmanager-data:/alertmanager
     networks:
@@ -93,26 +92,8 @@ services:
       io.zeelos.app: ${project.name}
       io.zeelos.role: "alertmanager - The Alertmanager handles alerts sent by client applications such as the Prometheus server"
 
-  unsee:
-    image: cloudflare/unsee:v0.9.2
-    networks:
-      - monnet
-    ports:
-      - published: 9094
-        target: 8080
-        mode: host
-    environment:
-      - "ALERTMANAGER_URI=http://alertmanager:9093"
-    deploy:
-      placement:
-        constraints:
-          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-5
-    labels:
-      io.zeelos.app: ${project.name}
-      io.zeelos.role: "unsee - Alert dashboard for Prometheus Alertmanager"
-
   cadvisor:
-    image: zeelos/cadvisor:v0.30.2
+    image: images.zeelos.io/library/cadvisor:v0.33.1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock,readonly
       - /:/rootfs
@@ -133,7 +114,7 @@ services:
       io.zeelos.role: "cAdvisor - Analyzes resource usage and performance characteristics of running containers"
 
   node-exporter:
-    image: zeelos/node_exporter:v0.16.0
+    image: images.zeelos.io/library/node_exporter:v0.17.0
     environment:
       - NODE_ID={{.Node.ID}}
     networks:
@@ -156,7 +137,7 @@ services:
       io.zeelos.role: "node-exporter - Exporter for machine metrics"
 
   docker-exporter:
-    image: zeelos/docker_exporter:1.7.3.1
+    image: images.zeelos.io/library/docker_exporter:1.7.3.1
     environment:
       - IN=172.17.0.1:9323
       - OUT=9323

@@ -19,12 +19,12 @@ cmd="$1"
 
 for id in $(seq 1 $managers); do
     echo "'$network-swarm-manager-$id': '$cmd' "
-    gcloud compute ssh "$network-swarm-manager-$id" --internal-ip \
+    gcloud compute ssh "$network-swarm-manager-$id" --internal-ip --zone=$region-$zone \
     --command "sudo $cmd"
 done
 
 for id in $(seq 1 $workers); do
     echo "'$network-swarm-worker-$id': '$cmd' "
-    gcloud compute ssh "$network-swarm-worker-$id" --internal-ip \
+    gcloud compute ssh "$network-swarm-worker-$id" --internal-ip --zone=$region-$zone \
     --command "sudo $cmd"
 done

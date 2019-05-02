@@ -4,11 +4,10 @@
 version: '3.6'
 
 services:
-
   kafka-mirrormaker:
-    image: ${mirrormaker.image}:${mirrormaker.version}
+    image: images.zeelos.io/library/kafka-mirrormaker:5.2.1
     environment:
-      - MIRRORMAKER_WHITE_LIST=^iot.${edge.id}.((?!req).)*$$
+      - MIRRORMAKER_WHITE_LIST=^iot.${edge.id}.((?!req).)*$$$$
       - MIRRORMAKER_ABORT_ON_SEND_FAILURE=true
       - MIRRORMAKER_OFFSET_COMMIT_INTERVAL=10000
       - MIRRORMAKER_NUM_STREAMS=1

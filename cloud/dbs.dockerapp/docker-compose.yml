@@ -4,9 +4,8 @@
 version: '3.6'
 
 services:
-
   orientdb:
-    image: ${orientdb.image}:${orientdb.version}
+    image: images.zeelos.io/library/orientdb:3.0.18-tp3-with-zeelosdb
     volumes:
       - orientdb-data:/orientdb/databases
     environment:
@@ -46,7 +45,7 @@ services:
       io.zeelos.role: "OrientDB - Distributed Multi-Model and Graph Database"
 
   influxdb:
-    image: ${influxdb.image}:${influxdb.version}
+    image: images.zeelos.io/library/influxdb:1.7.6-with-zeelosdb
     volumes:
       - influxdb-data:/var/lib/influxdb
     environment:
@@ -68,7 +67,7 @@ services:
       io.zeelos.role: "InfluxDB - The Platform for Time-Series Data"
 
   grafana:
-    image: ${grafana.image}:${grafana.version}
+    image: images.zeelos.io/library/grafana:6.1.4-influx-with-zeelosdb
     volumes:
       - grafana-data:/var/lib/grafana
     environment:

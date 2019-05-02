@@ -2,7 +2,7 @@
   "config": {
     "connector.class": "io.zeelos.leshan.kafka.connect.sink.asset.LeshanSinkAssetConnector",
     "tasks.max": "1",
-    "topics": "iot.GATEWAY_ID.registrations",
+    "topics": "iot.EDGE_ID.registrations",
     "tinkerpop3.url": "remote:orientdb/zeelosdb",
     "tinkerpop3.user": "root",
     "tinkerpop3.password": "secret",
@@ -10,5 +10,5 @@
     "value.converter": "io.confluent.connect.avro.AvroConverter",
     "value.converter.schema.registry.url": "https://schema-registry-cloud:8081"
   },
-  "name": "GATEWAY_ID_leshan_asset_sink"
+  "name": "EDGE_ID_leshan_asset_sink"
 }

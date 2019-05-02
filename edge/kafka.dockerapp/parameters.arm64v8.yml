@@ -1,0 +1,17 @@
+# snappy encoding on arm64 throws an exception,
+# disable for now, investigate more
+# see https://github.com/xerial/snappy-java/issues/209
+compression:
+  type: none
+
+zookeeper:
+  heap_opts: -Xmx128M -Xms128M
+
+kafka:
+  heap_opts: -Xmx512M -Xms512M
+
+schema:
+  heap_opts: -Xmx128M -Xms128M
+
+rest:
+  heap_opts: -Xmx128M -Xms128M

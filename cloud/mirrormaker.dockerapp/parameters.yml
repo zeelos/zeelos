@@ -1,5 +1,5 @@
 project: 
-    name: zeelos
+    name: zeelos-234311
     region: europe-west3
     zone: a
 
@@ -15,6 +15,4 @@ compression:
   type: snappy
 
 mirrormaker:
-  image: zeelos/kafka-mirrormaker
-  version: 5.1.0
   heap_opts: -Xms128M -Xmx128M

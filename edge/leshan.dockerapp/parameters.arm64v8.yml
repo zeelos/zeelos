@@ -1,10 +1,8 @@
-leshan:
-  image: zeelos/leshan-server-kafka
-  version: 0.2-SNAPSHOT-arm64v8
-  heap_opts: -Xmx256M -Xms256M
-
 # snappy encoding on arm64 throws an exception,
 # disable for now, investigate more
 # see https://github.com/xerial/snappy-java/issues/209
 compression:
   type: none
+
+leshan:
+  heap_opts: -Xmx128M -Xms128M

@@ -70,8 +70,11 @@ gcloud --quiet compute firewall-rules delete "$network-allow-grafana"
 echo "deleting firewall rule (allow:docker-metrics).."
 gcloud --quiet compute firewall-rules delete "$network-allow-docker-metrics" 
 
-echo "deleting firewall rule (allow:prom-alertm-unsee-cadvisor).."
-gcloud --quiet compute firewall-rules delete "$network-allow-prom-alertm-unsee-cadvisor"
+echo "deleting firewall rule (allow:prom-alertm-cadvisor).."
+gcloud --quiet compute firewall-rules delete "$network-allow-prom-alertm-cadvisor"
+
+echo "deleting firewall rule (allow:prom-alertm-cadvisor-edge).."
+gcloud --quiet compute firewall-rules delete "$network-allow-prom-alertm-cadvisor-edge" 
 
 echo "deleting NAT router.."
 gcloud --quiet compute routers nats delete "$network-nat-config" --router "$network-nat-router"

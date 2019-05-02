@@ -1,0 +1,8 @@
+# snappy encoding on arm64 throws an exception,
+# disable for now, investigate more
+# see https://github.com/xerial/snappy-java/issues/209
+compression:
+  type: none
+
+mirrormaker:
+  heap_opts: -Xmx64M -Xms64M

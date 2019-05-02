@@ -1,0 +1,25 @@
+project: 
+    name: zeelos-234311
+
+ssl:
+  truststorepass: itsasecret
+  keystorepass: itsasecret
+  keypass: itsasecret
+ 
+edge:
+  id: FILL ME
+
+compression:
+  type: snappy
+
+zookeeper:
+  heap_opts: -Xmx256M -Xms256M
+
+kafka:
+  heap_opts: -Xmx512M -Xms512M
+
+schema:
+  heap_opts: -Xmx256M -Xms256M
+
+rest:
+  heap_opts: -Xmx256M -Xms256M

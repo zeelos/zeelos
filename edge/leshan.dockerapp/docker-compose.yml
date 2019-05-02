@@ -4,9 +4,8 @@
 version: '3.6'
 
 services:
-
   leshan-server-kafka-edge:
-    image: ${leshan.image}:${leshan.version}
+    image: images.zeelos.io/library/leshan-server-kafka:0.7-SNAPSHOT
     volumes:
       - leshan-server-data:/opt/leshan-server-kafka/data
     environment:

@@ -4,10 +4,8 @@
 version: '3.6'
 
 services:
-
-
   kafka-mirrormaker-edge:
-    image: ${mirrormaker.image}:${mirrormaker.version}
+    image: images.zeelos.io/library/kafka-mirrormaker:5.2.1
     environment:
       - MIRRORMAKER_WHITE_LIST=^iot.${edge.id}.management.req
       - MIRRORMAKER_ABORT_ON_SEND_FAILURE=true
@@ -58,8 +56,8 @@ services:
       - edge
       - monnet
     ports:
-      - published: 9564
-        target: 9564
+      - published: 8123
+        target: 9550
         mode: host
     deploy:
       placement:

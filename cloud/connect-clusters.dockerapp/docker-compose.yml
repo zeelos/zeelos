@@ -4,9 +4,8 @@
 version: '3.6'
 
 services:
-
   connect-influxdb:
-    image: zeelos/kafka-connect-leshan-influxdb:0.3-SNAPSHOT
+    image: images.zeelos.io/library/kafka-connect-leshan-influxdb:0.4-SNAPSHOT
     environment:
       - CONNECT_BOOTSTRAP_SERVERS=SSL://kafka-cloud-1:9092,SSL://kafka-cloud-2:9092,SSL://kafka-cloud-3:9092
       - CONNECT_LISTENERS=https://0.0.0.0:8083
@@ -89,7 +88,7 @@ services:
       - cloudnet
       - monnet
     ports:
-      - published: 8083
+      - published: 8073
         target: 8083
         mode: ingress
       # - published: 9584
@@ -106,7 +105,7 @@ services:
       io.zeelos.edgeId: ${edge.id}
 
   connect-leshan-asset:
-    image: zeelos/kafka-connect-leshan-influxdb:0.3-SNAPSHOT
+    image: images.zeelos.io/library/kafka-connect-leshan-influxdb:0.4-SNAPSHOT
     environment:
       - CONNECT_BOOTSTRAP_SERVERS=SSL://kafka-cloud-1:9092,SSL://kafka-cloud-2:9092,SSL://kafka-cloud-3:9092
       - CONNECT_LISTENERS=https://0.0.0.0:8084
@@ -189,7 +188,7 @@ services:
       - cloudnet
       - monnet
     ports:
-      - published: 8084
+      - published: 8074
         target: 8084
         mode: ingress
       # - published: 9585
