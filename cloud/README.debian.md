@@ -66,19 +66,16 @@ PrivateKey = yAK1AGYWSSZmfhOjGEwA1sh0Vcqe7h5UHB/8p4kYvkw=
 [Peer]
 PublicKey = HKeFjgAHyGQMIJ1veL09Kb1xHhzeZ3usdPqOxAl3pT8=
 AllowedIPs = 172.16.90.0/24
-Endpoint = 94.66.31.27:62910
 PersistentKeepalive = 10
 
 [Peer]
 PublicKey = xOwUOQilktiMrdNskJWAk+JD4q1xrlJs54ZwwKlMpnE=
 AllowedIPs = 192.168.1.10/32, 172.16.2.0/24
-Endpoint = 94.66.31.27:50804
 PersistentKeepalive = 10
 
 [Peer]
 PublicKey = A+ltKUGMWtX2ecJ+GJ7+VSylpuJ3fzBbpvqPa+xQ8U0=
 AllowedIPs = 192.168.1.11/32, 172.16.3.0/24
-Endpoint = 94.66.31.27:1028
 PersistentKeepalive = 10
 
 
@@ -94,7 +91,7 @@ PrivateKey = kNbWpQGSQSeuZ7H2U5TP3kXY3qBkZnykh30wUfCpwWI=
 [Peer]
 PublicKey = XwXq3cpB9zRuYgaWN256qfITXKSvjw1Wo4+jy6K67Xo=
 AllowedIPs = 172.16.90.0/24, 172.16.2.0/24, 172.16.1.0/24, 10.180.0.0/20
-Endpoint = 35.198.161.52:51820
+Endpoint = 35.242.232.1:51820
 PersistentKeepalive = 10
 
 
@@ -110,7 +107,7 @@ PrivateKey = OGho4etV+B2rSfqtVzynKxcnPKVNYtjI1X1mvN+dYmY=
 [Peer]
 PublicKey = XwXq3cpB9zRuYgaWN256qfITXKSvjw1Wo4+jy6K67Xo=
 AllowedIPs = 172.16.90.0/24, 172.16.3.0/24, 172.16.1.0/24, 10.180.0.0/20
-Endpoint = 35.198.161.52:51820
+Endpoint = 35.242.232.1:51820
 PersistentKeepalive = 10
 
 
@@ -124,7 +121,7 @@ DNS = 172.16.1.1
 [Peer]
 PublicKey = XwXq3cpB9zRuYgaWN256qfITXKSvjw1Wo4+jy6K67Xo=
 AllowedIPs = 10.180.0.0/20, 172.16.1.0/24, 172.16.2.0/24, 172.16.90.0/24
-Endpoint = 35.198.161.52:51820
+Endpoint = 35.242.232.1:51820
 PersistentKeepalive = 10
 
 
@@ -135,7 +132,7 @@ systemctl enable --now wg-quick@wg0
 # install dnsmasq
 apt-get install dnsmasq
 # edit '/etc/dnsmasq.conf' and allow incoming connections from hosts
-listen-address=172.16.1.1,10.180.0.2,10.180.0.3,10.180.0.4,10.180.0.5,10.180.0.6,10.180.0.7,10.180.0.8,10.180.0.9,10.180.0.10,10.180.0.11,127.0.0.1
+listen-address=127.0.0.1,172.16.1.1,10.180.0.2,10.180.0.3,10.180.0.4,10.180.0.5,10.180.0.6,10.180.0.7,10.180.0.8,10.180.0.9,10.180.0.10,10.180.0.11
 
 systemctl enable --now dnsmasq
 

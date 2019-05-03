@@ -2,7 +2,7 @@
 # set -x
 
 # the project id
-project="zeelos-234311"
+project="zeelos-io-239412"
 
 # Google GCP region/zone
 region="europe-west3"
@@ -37,11 +37,11 @@ gcloud --quiet compute firewall-rules delete "$network-allow-portainer-ui"
 echo "deleting firewall rule (allow:portainer-agent).."
 gcloud --quiet compute firewall-rules delete "$network-allow-portainer-agent"
 
-echo "deleting firewall rule (allow:kafka-broker-zookeeper).."
-gcloud --quiet compute firewall-rules delete "$network-allow-kafka-broker-zookeeper"
+echo "deleting firewall rule (allow:kafka-zookeeper).."
+gcloud --quiet compute firewall-rules delete "$network-allow-kafka-zookeeper"
 
-echo "deleting firewall rule (allow:kafka-broker-zookeeper-edge).."
-gcloud --quiet compute firewall-rules delete "$network-allow-kafka-broker-zookeeper-edge"
+echo "deleting firewall rule (allow:kafka-zookeeper-edge).."
+gcloud --quiet compute firewall-rules delete "$network-allow-kafka-zookeeper-edge"
 
 echo "deleting firewall rule (allow:kafka-schema-registry).."
 gcloud --quiet compute firewall-rules delete "$network-allow-kafka-schema-registry"

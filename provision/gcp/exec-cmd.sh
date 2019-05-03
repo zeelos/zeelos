@@ -1,8 +1,9 @@
 #!/bin/bash
 # set -x
 
-# the project id
-project="zeelos-234311"
+# project details
+project="zeelos-io-239412"
+user="zeelos_dev_3_gmail_com"
 
 # Google GCP region/zone
 region="europe-west3"
@@ -19,12 +20,12 @@ cmd="$1"
 
 for id in $(seq 1 $managers); do
     echo "'$network-swarm-manager-$id': '$cmd' "
-    gcloud compute ssh "$network-swarm-manager-$id" --internal-ip --zone=$region-$zone \
+    gcloud compute ssh "$user@$network-swarm-manager-$id" --quiet --internal-ip --zone=$region-$zone \
     --command "sudo $cmd"
 done
 
 for id in $(seq 1 $workers); do
     echo "'$network-swarm-worker-$id': '$cmd' "
-    gcloud compute ssh "$network-swarm-worker-$id" --internal-ip --zone=$region-$zone \
+    gcloud compute ssh "$user@$network-swarm-worker-$id" --internal-ip --zone=$region-$zone \
     --command "sudo $cmd"
 done

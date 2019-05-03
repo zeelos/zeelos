@@ -1,8 +1,8 @@
 #!/bin/bash
 # set -x
 
-# the project id
-project="zeelos-234311"
+# project details
+project="zeelos-io-239412"
 
 # Google GCP region/zone
 region="europe-west3"
@@ -14,7 +14,7 @@ ip_subnet="subnet-$network"
 ip_range="10.180.0.0/20"
 
 # VPN network
-ip_vpn_external="94.66.31.27"
+ip_vpn_external="85.75.219.239"
 ip_vpn_internal="192.168.1.0/24"
 
 # Docker Swarm spec.
@@ -35,7 +35,7 @@ worker_mem="3840MB"
 
 # base Linux image OS used on all hosts
 image="debian-9-stretch"
-image_project="zeelos-234311"
+image_project="zeelos-io-239412"
 
 # create network and subnet
 echo "creating network '$network'.."
@@ -166,14 +166,14 @@ gcloud compute firewall-rules create "$network-allow-portainer-agent" \
 --target-tags="docker,bastion" \
 --allow tcp:9001
 
-echo "creating firewall rule (allow:kafka-broker-zookeeper).."
-gcloud compute firewall-rules create "$network-allow-kafka-broker-zookeeper" \
+echo "creating firewall rule (allow:kafka-zookeeper).."
+gcloud compute firewall-rules create "$network-allow-kafka-zookeeper" \
 --network "$network" \
 --target-tags="worker" \
 --allow tcp:2181,tcp:9580,tcp:9092,tcp:9581
 
-echo "creating firewall rule (allow:kafka-broker-zookeeper-edge).."
-gcloud compute firewall-rules create "$network-allow-kafka-broker-zookeeper-edge" \
+echo "creating firewall rule (allow:kafka-zookeeper-edge).."
+gcloud compute firewall-rules create "$network-allow-kafka-zookeeper-edge" \
 --network "$network" \
 --source-ranges="$ip_vpn_internal,$ip_range" \
 --target-tags="worker,bastion" \
