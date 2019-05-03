@@ -1,1 +1,2 @@
---TODO--
+kstreams:
+  heap_opts: -Xmx128M -Xms128M

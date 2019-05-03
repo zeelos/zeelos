@@ -8,12 +8,35 @@ docker network create --driver overlay edgenet_rock64
 
 # start services
 cd edge/
+
+# upboard
 docker-app render monitoring | docker stack deploy --compose-file - monitoring
 docker-app render --set edge.id=upboard kafka | docker stack deploy --compose-file - kafka
-docker-app render --set edge.id=upboard leshan | docker stack deploy --compose-file - leshan
+docker-app render --set edge.id=upboard leshan | docker stack deploy --compose-file - leshan-server
+docker-app render --set edge.id=upboard mirrormaker | docker stack deploy --compose-file - mirrormaker
+docker-app render --set edge.id=upboard streams | docker stack deploy --compose-file - streams
+
+
+
+# rock64
+docker-app render monitoring | docker stack deploy --compose-file - monitoring
+docker-app render --set edge.id=rock64 --parameters-file kafka.dockerapp/parameters.arm64v8.yml kafka | docker stack deploy --compose-file - kafka
+docker-app render --set edge.id=rock64 --parameters-file leshan.dockerapp/parameters.arm64v8.yml leshan | docker stack deploy --compose-file - leshan
+docker-app render --set edge.id=rock64 --parameters-file mirrormaker.dockerapp/parameters.arm64v8.yml mirrormaker
+docker-app render --set edge.id=rock64 --parameters-file streams.dockerapp/parameters.arm64v8.yml streams
+
+
+docker stack deploy --compose-file kafka.yml kafka
+docker stack deploy --compose-file leshan.yml leshan-server
+docker stack deploy --compose-file mirrormaker.yml mirrormaker
+docker stack deploy --compose-file streams.yml streams
+
+
 
 
 # create topics
+
+# upboard
 kafka-topics --create --topic "iot.upboard.management.req" --bootstrap-server kafka-upboard-edge:9082 --partitions 3 --replication-factor 1 --command-config /Users/cvasilak/Projects/RealRed/projects/zeelos/leshan/client_security_edge.properties
 
 kafka-topics --create --topic "iot.upboard.management.rep" --bootstrap-server kafka-upboard-edge:9082 --partitions 3 --replication-factor 1 --command-config /Users/cvasilak/Projects/RealRed/projects/zeelos/leshan/client_security_edge.properties
@@ -21,6 +44,17 @@ kafka-topics --create --topic "iot.upboard.management.rep" --bootstrap-server ka
 kafka-topics --create --topic "iot.upboard.observations" --bootstrap-server kafka-upboard-edge:9082 --partitions 3 --replication-factor 1 --command-config /Users/cvasilak/Projects/RealRed/projects/zeelos/leshan/client_security_edge.properties
 
 kafka-topics --create --topic "iot.upboard.registrations" --bootstrap-server kafka-upboard-edge:9082 --partitions 3 --replication-factor 1 --command-config /Users/cvasilak/Projects/RealRed/projects/zeelos/leshan/client_security_edge.properties
+
+# rock64
+kafka-topics --create --topic "iot.rock64.management.req" --bootstrap-server kafka-rock64-edge:9082 --partitions 3 --replication-factor 1 --command-config /Users/cvasilak/Projects/RealRed/projects/zeelos/leshan/client_security_edge.properties
+
+kafka-topics --create --topic "iot.rock64.management.rep" --bootstrap-server kafka-rock64-edge:9082 --partitions 3 --replication-factor 1 --command-config /Users/cvasilak/Projects/RealRed/projects/zeelos/leshan/client_security_edge.properties
+
+kafka-topics --create --topic "iot.rock64.observations" --bootstrap-server kafka-rock64-edge:9082 --partitions 3 --replication-factor 1 --command-config /Users/cvasilak/Projects/RealRed/projects/zeelos/leshan/client_security_edge.properties
+
+kafka-topics --create --topic "iot.rock64.registrations" --bootstrap-server kafka-rock64-edge:9082 --partitions 3 --replication-factor 1 --command-config /Users/cvasilak/Projects/RealRed/projects/zeelos/leshan/client_security_edge.properties
+
+
 
 # metadata listing for partition
 kafkacat -L -b kafka-upboard-edge:9082 -t iot.upboard.management.req \
