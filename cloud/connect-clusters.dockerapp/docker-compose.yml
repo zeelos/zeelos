@@ -88,7 +88,7 @@ services:
       - cloudnet
       - monnet
     ports:
-      - published: 8073
+      - published: 8083
         target: 8083
         mode: ingress
       # - published: 9584
@@ -188,7 +188,7 @@ services:
       - cloudnet
       - monnet
     ports:
-      - published: 8074
+      - published: 8084
         target: 8084
         mode: ingress
       # - published: 9585

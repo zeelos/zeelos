@@ -5,6 +5,13 @@
 docker network create --driver overlay monnet
 docker network create --driver overlay cloudnet
 
+# create certificates
+cd security/
+./certs-create.sh
+
+# update paramaters.yml on docker-apps with the correct 'project id'
+
+
 # start services
 cd cloud/
 docker-app render monitoring | docker stack deploy --compose-file - monitoring
@@ -58,17 +65,31 @@ kafkacat -C -b kafka-cloud-1:9092 -t iot.upboard.observations \
 
 # start mirrormaker
 cd cloud/
+
+# upboard
 docker-app render --set edge.id=upboard mirrormaker | docker stack deploy --compose-file - mirrormaker-upboard
 
+# rock64
 docker-app render --set edge.id=rock64 mirrormaker | docker stack deploy --compose-file - mirrormaker-rock64
 
 # deploy connectors
+
+# upboard
 export EDGE_ID=upboard
 cd ./configs && \
 LESHAN_ASSET_CONECTOR_CONFIG=`sed -e "s/EDGE_ID/$EDGE_ID/g" kafka-connect/kafka-connect-leshan-asset/connect-leshan-sink-asset.json` && \
-curl -X POST -H "Content-Type: application/json" -d "$LESHAN_ASSET_CONECTOR_CONFIG" -k https://connect-leshan-asset:8084/connectors && \
+curl -X POST -H "Content-Type: application/json" -d "$LESHAN_ASSET_CONECTOR_CONFIG" -k https://connect-leshan-asset-upboard:8084/connectors && \
 INFLUXDB_CONECTOR_CONFIG=`sed -e "s/EDGE_ID/$EDGE_ID/g" kafka-connect/kafka-connect-influxdb/connect-influxdb-sink.json` && \
-curl -X POST -H "Content-Type: application/json" -d "$INFLUXDB_CONECTOR_CONFIG" -k https://connect-influxdb:8083/connectors
+curl -X POST -H "Content-Type: application/json" -d "$INFLUXDB_CONECTOR_CONFIG" -k https://connect-influxdb-upboard:8083/connectors
+
+# rock64
+export EDGE_ID=rock64
+cd ./configs && \
+LESHAN_ASSET_CONECTOR_CONFIG=`sed -e "s/EDGE_ID/$EDGE_ID/g" kafka-connect/kafka-connect-leshan-asset/connect-leshan-sink-asset.json` && \
+curl -X POST -H "Content-Type: application/json" -d "$LESHAN_ASSET_CONECTOR_CONFIG" -k https://connect-leshan-asset-rock64:8074/connectors && \
+INFLUXDB_CONECTOR_CONFIG=`sed -e "s/EDGE_ID/$EDGE_ID/g" kafka-connect/kafka-connect-influxdb/connect-influxdb-sink.json` && \
+curl -X POST -H "Content-Type: application/json" -d "$INFLUXDB_CONECTOR_CONFIG" -k https://connect-influxdb-rock64:8073/connectors
+
 
 export EDGE_ID=rock64
 cd ./configs && \
