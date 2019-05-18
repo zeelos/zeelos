@@ -2,7 +2,7 @@
 # set -x
 
 # project details
-project="zeelos-io-239412"
+project="zeelos-io-241010"
 
 # Google GCP region/zone
 region="europe-west3"
@@ -35,7 +35,7 @@ worker_mem="3840MB"
 
 # base Linux image OS used on all hosts
 image="debian-9-stretch"
-image_project="zeelos-io-239412"
+image_project="zeelos-io-241010"
 
 # create network and subnet
 echo "creating network '$network'.."
