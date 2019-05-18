@@ -3,7 +3,7 @@
 
 # project details
 project="zeelos-io-241010"
-user="zeelos_dev_3_gmail_com"
+user=""
 
 # Google GCP region/zone
 region="europe-west3"
@@ -17,6 +17,12 @@ managers=3
 workers=6
 
 cmd="$1"
+
+# check if username is configured
+if [ -z "$user" ]; then
+    echo "\$user is empty!"
+    exit 1
+fi
 
 for id in $(seq 1 $managers); do
     echo "'$network-swarm-manager-$id': '$cmd' "
