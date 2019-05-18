@@ -1,10 +1,14 @@
-# set hostname. For some reason on GCP, debian is missing '/etc/hostname' which causes node-exporter docker image to fail to boostrap
-hostnamectl set-hostname <host>
-
 # install handy utils
-apt-get install sudo htop screen traceroute
+apt-get install sudo htop screen traceroute bash-completion
 
 # copy 'docker-remove-*' to /usr/local/bin
+
+# create '/etc/hostname'
+edit /etc/dhcp/dhclient-exit-hooks.d/google_set_hostname and 'append echo line'
+
+if [ -n "$new_host_name" ]; then
+  hostname "${new_host_name%%.*}"
+  echo "${new_host_name%%.*}" > /etc/hostname
 
 # edit '/etc/sysctl.conf' and add the following
 # disable ipv6
@@ -16,13 +20,6 @@ net.ipv6.conf.lo.disable_ipv6 = 1
 net.ipv4.ip_forward = 1
 net.ipv4.conf.all.forwarding = 1
 net.ipv4.conf.all.rp_filter = 0
-
-# for each host add dnsmsaq entry '/etc/resolv.conf'
-nameserver 10.180.0.2
-# and disable update of 'resolv.conf'
-# see https://wiki.debian.org/resolv.conf
-sudo chattr +i /etc/resolv.conf
-
 
 # install docker
 https://docs.docker.com/install/linux/docker-ce/debian/
@@ -44,15 +41,32 @@ apt-get install openjdk-8-jdk-headless
 
 # install maven
 wget -qO- http://www-us.apache.org/dist/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz | tar xvz -C /opt
-export MAVEN_HOME=/opt/apache-maven-3.5.4
-export PATH=$PATH:$MAVEN_HOME/bin
+
+# update envs
+/etc/bash.bashrc 
+   export MAVEN_HOME=/opt/apache-maven-3.5.4
+   export PATH=$PATH:$MAVEN_HOME/bin
+
+
+# for each host add dnsmsaq entry '/etc/resolv.conf'
+nameserver 10.180.0.2
+# and disable update of 'resolv.conf'
+# see https://wiki.debian.org/resolv.conf
+sudo chattr +i /etc/resolv.conf
+
+
+####
+#  Bastion host
+####
+
+# disable docker
+systemctl disable --now docker containerd
 
 ##
-# wireguard
+# setup wireguard
 ##
 apt-get install -y dnsutils openresolv
 https://www.wireguard.com/install/
-
 
 # sample server interface
 [Interface]
@@ -158,12 +172,19 @@ systemctl enable --now dnsmasq
 192.168.1.23    uranus
 
 
+
+
+
+
+
 # useful cmd's
 ./exec-cmd.sh "sudo apt-get update; sudo apt-get upgrade -y"
 
 # install handy alias
-./exec-cmd.sh "echo \"alias dk='docker'\" >> ~/.bash_aliases"
-
+/etc/bash.bashrc
+   alias dk='docker'
+# install completion script
+source <(docker-app completion bash) > /etc/bash_completion.d/docker-app
 
 # harbor self-signed certificate
 openssl genrsa -out ca.key 4096

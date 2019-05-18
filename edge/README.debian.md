@@ -36,7 +36,7 @@ https://github.com/docker/app
 }
 
 # install openjdk
-apt-get install openjdk-8-jdk
+apt-get install openjdk-8-jdk-headless
 
 # install maven
 wget -qO- http://www-us.apache.org/dist/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz | tar xvz -C /opt
