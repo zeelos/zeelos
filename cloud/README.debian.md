@@ -221,3 +221,11 @@ see https://certbot.eff.org/lets-encrypt/debianstretch-other
 
 certbot certonly --standalone -d images.zeelos.io
 ./install.sh --with-notary --with-clair
+
+
+
+# start-stop
+cd ~/harbor
+docker-compose -f ./docker-compose.yml -f ./docker-compose.notary.yml -f ./docker-compose.clair.yml down -v
+./prepare --with-notary --with-clair
+docker-compose -f ./docker-compose.yml -f ./docker-compose.notary.yml -f ./docker-compose.clair.yml up -d

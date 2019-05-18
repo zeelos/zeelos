@@ -57,6 +57,7 @@ kafka-topics --create --topic "iot.rock64.registrations" --bootstrap-server kafk
 
 
 # metadata listing for partition
+# upboard
 kafkacat -L -b kafka-upboard-edge:9082 -t iot.upboard.management.req \
 -X security.protocol=SSL \
 -X ssl.key.location=/Users/cvasilak/Projects/RealRed/projects/zeelos/zeelos/security/client-edge.key \
@@ -64,7 +65,37 @@ kafkacat -L -b kafka-upboard-edge:9082 -t iot.upboard.management.req \
 -X ssl.certificate.location=/Users/cvasilak/Projects/RealRed/projects/zeelos/zeelos/security/client-edge.certificate.pem \
 -X ssl.ca.location=/Users/cvasilak/Projects/RealRed/projects/zeelos/zeelos/security/zeelos.io-ca.crt
 
-kafkacat -C -b kafka-upboard-edge:9082 -t iot.upboard.observations \
+kafkacat -C -b kafka-upboard-edge:9082 -t iot.upboard.observations -o end \
+-X security.protocol=SSL \
+-X ssl.key.location=/Users/cvasilak/Projects/RealRed/projects/zeelos/zeelos/security/client-edge.key \
+-X ssl.key.password=itsasecret \
+-X ssl.certificate.location=/Users/cvasilak/Projects/RealRed/projects/zeelos/zeelos/security/client-edge.certificate.pem \
+-X ssl.ca.location=/Users/cvasilak/Projects/RealRed/projects/zeelos/zeelos/security/zeelos.io-ca.crt
+
+kafkacat -C -b kafka-upboard-edge:9082 -t analytics.upboard.observations.maxper30sec -o end \
+-X security.protocol=SSL \
+-X ssl.key.location=/Users/cvasilak/Projects/RealRed/projects/zeelos/zeelos/security/client-edge.key \
+-X ssl.key.password=itsasecret \
+-X ssl.certificate.location=/Users/cvasilak/Projects/RealRed/projects/zeelos/zeelos/security/client-edge.certificate.pem \
+-X ssl.ca.location=/Users/cvasilak/Projects/RealRed/projects/zeelos/zeelos/security/zeelos.io-ca.crt
+
+
+# rock64
+kafkacat -L -b kafka-rock64-edge:9082 -t iot.rock64.management.req \
+-X security.protocol=SSL \
+-X ssl.key.location=/Users/cvasilak/Projects/RealRed/projects/zeelos/zeelos/security/client-edge.key \
+-X ssl.key.password=itsasecret \
+-X ssl.certificate.location=/Users/cvasilak/Projects/RealRed/projects/zeelos/zeelos/security/client-edge.certificate.pem \
+-X ssl.ca.location=/Users/cvasilak/Projects/RealRed/projects/zeelos/zeelos/security/zeelos.io-ca.crt
+
+kafkacat -C -b kafka-rock64-edge:9082 -t iot.rock64.observations -o end \
+-X security.protocol=SSL \
+-X ssl.key.location=/Users/cvasilak/Projects/RealRed/projects/zeelos/zeelos/security/client-edge.key \
+-X ssl.key.password=itsasecret \
+-X ssl.certificate.location=/Users/cvasilak/Projects/RealRed/projects/zeelos/zeelos/security/client-edge.certificate.pem \
+-X ssl.ca.location=/Users/cvasilak/Projects/RealRed/projects/zeelos/zeelos/security/zeelos.io-ca.crt
+
+kafkacat -C -b kafka-rock64-edge:9082 -t analytics.rock64.observations.maxper30sec -o end \
 -X security.protocol=SSL \
 -X ssl.key.location=/Users/cvasilak/Projects/RealRed/projects/zeelos/zeelos/security/client-edge.key \
 -X ssl.key.password=itsasecret \
