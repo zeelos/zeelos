@@ -122,7 +122,7 @@ services:
       - SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS=SSL://kafka-cloud-1:9092,SSL://kafka-cloud-2:9092,SSL://kafka-cloud-3:9092
       - SCHEMA_REGISTRY_MASTER_ELIGIBILIY=false
       - SCHEMA_REGISTRY_INTER_INSTANCE_PROTOCOL=https
-      - SCHEMA_REGISTRY_SCHEMA_REGISTRY_GROUP_ID=${project.name}
+      - SCHEMA_REGISTRY_SCHEMA_REGISTRY_GROUP_ID=zeelos
       - SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_METHODS=GET,POST,PUT,DELETE,OPTIONS
       - SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_ORIGIN=*
       - SCHEMA_REGISTRY_OPTS=-javaagent:/etc/kafka/prometheus/jmx_prometheus_javaagent.jar=8080:/etc/kafka/prometheus/jmx-exporter-kafka-config.yml
