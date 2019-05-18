@@ -3,7 +3,7 @@
 
 # project details
 project="zeelos-io-241010"
-user="zeelos_dev_3_gmail_com"
+user=""
 
 # Google GCP region/zone
 region="europe-west3"
@@ -15,6 +15,12 @@ network="$project-$region-$zone"
 # Docker Swarm spec.
 managers=3
 workers=6
+
+# check if username is configured
+if [ -z "$user" ]; then
+    echo "\$user is empty!"
+ s   exit 1
+fi
 
 first_manager_ip=$(gcloud compute instances describe \
     --zone $region-$zone \
