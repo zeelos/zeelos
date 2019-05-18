@@ -19,7 +19,7 @@ workers=6
 # check if username is configured
 if [ -z "$user" ]; then
     echo "\$user is empty!"
- s   exit 1
+    exit 1
 fi
 
 first_manager_ip=$(gcloud compute instances describe \
