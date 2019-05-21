@@ -35,6 +35,8 @@ https://github.com/docker/app
 
 # install rex-ray plugin
 docker plugin install rexray/gcepd GCEPD_TAG=rexray GCEPD_CONVERTUNDERSCORES=true --grant-all-permissions
+# .. and enable it
+docker plugin enable rexray/gcepd:latest 
 
 # install openjdk
 apt-get install openjdk-8-jdk-headless
@@ -164,8 +166,8 @@ systemctl enable --now dnsmasq
 10.180.0.7      zeelos-europe-west3-a-swarm-worker-2 kafka-cloud-2 zookeeper-cloud-2
 10.180.0.8      zeelos-europe-west3-a-swarm-worker-3 kafka-cloud-3 zookeeper-cloud-3
 10.180.0.9      zeelos-europe-west3-a-swarm-worker-4 schema-registry-cloud rest-cloud kafka-mirrormaker-upboard
-10.180.0.10     zeelos-europe-west3-a-swarm-worker-5 orientdb influxdb grafana prometheus alertmanager unsee
-10.180.0.11     zeelos-europe-west3-a-swarm-worker-6 connect-influxdb connect-leshan-asset
+10.180.0.10     zeelos-europe-west3-a-swarm-worker-5 kafkahq orientdb influxdb grafana prometheus alertmanager unsee
+10.180.0.11     zeelos-europe-west3-a-swarm-worker-6 connect-cloud
 
 192.168.1.10    upboard kafka-upboard-edge zookeeper-upboard-edge schema-registry-upboard-edge rest-upboard-edge leshan-server-kafka-upboard-edge kafka-mirrormaker-upboard-edge
 192.168.1.11    rock64 kafka-rock64-edge zookeeper-rock64-edge schema-registry-rock64-edge rest-rock64-edge leshan-server-kafka-rock64-edge kafka-mirrormaker-rock64-edge

@@ -19,6 +19,7 @@ docker-app render kafka | docker stack deploy --compose-file - kafka
 docker-app render dbs | docker stack deploy --compose-file - dbs
 docker-app render --set edge.id=upboard connect-clusters | docker stack deploy --compose-file - connect-clusters-upboard
 docker-app render --set edge.id=rock64 connect-clusters | docker stack deploy --compose-file - connect-clusters-rock64
+docker-app render kafkahq | docker stack deploy --compose-file - kafkahq
 
 # create topics
 # Note: configure 'export SCHEMA_REGISTRY_OPTS' as in the case of the native connection to cloud
@@ -136,31 +137,31 @@ docker-app render --set edge.id=rock64 mirrormaker | docker stack deploy --compo
 export EDGE_ID=upboard
 cd ./configs && \
 LESHAN_ASSET_CONECTOR_CONFIG=`sed -e "s/EDGE_ID/$EDGE_ID/g" kafka-connect/kafka-connect-leshan-asset/connect-leshan-sink-asset.json` && \
-curl -X POST -H "Content-Type: application/json" -d "$LESHAN_ASSET_CONECTOR_CONFIG" -k https://connect-leshan-asset-upboard:8084/connectors && \
+curl -X POST -H "Content-Type: application/json" -d "$LESHAN_ASSET_CONECTOR_CONFIG" -k https://connect-cloud:8084/connectors && \
 INFLUXDB_CONECTOR_CONFIG=`sed -e "s/EDGE_ID/$EDGE_ID/g" kafka-connect/kafka-connect-influxdb/connect-influxdb-sink.json` && \
-curl -X POST -H "Content-Type: application/json" -d "$INFLUXDB_CONECTOR_CONFIG" -k https://connect-influxdb-upboard:8083/connectors
+curl -X POST -H "Content-Type: application/json" -d "$INFLUXDB_CONECTOR_CONFIG" -k https://connect-cloud:8083/connectors
 
 # rock64
 export EDGE_ID=rock64
 cd ./configs && \
 LESHAN_ASSET_CONECTOR_CONFIG=`sed -e "s/EDGE_ID/$EDGE_ID/g" kafka-connect/kafka-connect-leshan-asset/connect-leshan-sink-asset.json` && \
-curl -X POST -H "Content-Type: application/json" -d "$LESHAN_ASSET_CONECTOR_CONFIG" -k https://connect-leshan-asset-rock64:8074/connectors && \
+curl -X POST -H "Content-Type: application/json" -d "$LESHAN_ASSET_CONECTOR_CONFIG" -k https://connect-cloud:8074/connectors && \
 INFLUXDB_CONECTOR_CONFIG=`sed -e "s/EDGE_ID/$EDGE_ID/g" kafka-connect/kafka-connect-influxdb/connect-influxdb-sink.json` && \
-curl -X POST -H "Content-Type: application/json" -d "$INFLUXDB_CONECTOR_CONFIG" -k https://connect-influxdb-rock64:8073/connectors
+curl -X POST -H "Content-Type: application/json" -d "$INFLUXDB_CONECTOR_CONFIG" -k https://connect-cloud:8073/connectors
 
 
 export EDGE_ID=rock64
 cd ./configs && \
 LESHAN_ASSET_CONECTOR_CONFIG=`sed -e "s/EDGE_ID/$EDGE_ID/g" kafka-connect/kafka-connect-leshan-asset/connect-leshan-sink-asset.json` && \
-curl -X POST -H "Content-Type: application/json" -d "$LESHAN_ASSET_CONECTOR_CONFIG" -k https://connect-leshan-asset:8074/connectors && \
+curl -X POST -H "Content-Type: application/json" -d "$LESHAN_ASSET_CONECTOR_CONFIG" -k https://connect-cloud:8074/connectors && \
 INFLUXDB_CONECTOR_CONFIG=`sed -e "s/EDGE_ID/$EDGE_ID/g" kafka-connect/kafka-connect-influxdb/connect-influxdb-sink.json` && \
-curl -X POST -H "Content-Type: application/json" -d "$INFLUXDB_CONECTOR_CONFIG" -k https://connect-influxdb:8073/connectors
+curl -X POST -H "Content-Type: application/json" -d "$INFLUXDB_CONECTOR_CONFIG" -k https://connect-cloud:8073/connectors
 
 
 # list connectors
-curl -X GET -k https://connect-leshan-asset:8084/connectors/
+curl -X GET -k https://connect-cloud:8084/connectors/upboard_leshan_asset_sink
 # delete connector
-curl -X DELETE -k https://connect-leshan-asset:8084/connectors/_leshan_asset_sink
+curl -X DELETE -k https://connect-cloud:8084/connectors/_leshan_asset_sink
 
 #
 ## useful kafka administration tools
