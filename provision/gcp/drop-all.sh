@@ -40,8 +40,8 @@ gcloud --quiet compute firewall-rules delete "$network-allow-portainer-agent"
 echo "deleting firewall rule (allow:kafka-zookeeper).."
 gcloud --quiet compute firewall-rules delete "$network-allow-kafka-zookeeper"
 
-echo "deleting firewall rule (allow:kafka-zookeeper-edge).."
-gcloud --quiet compute firewall-rules delete "$network-allow-kafka-zookeeper-edge"
+echo "deleting firewall rule (allow:kafka-zookeeper-schema-edge).."
+gcloud --quiet compute firewall-rules delete "$network-allow-kafka-zookeeper-schema-edge"
 
 echo "deleting firewall rule (allow:kafka-schema-registry).."
 gcloud --quiet compute firewall-rules delete "$network-allow-kafka-schema-registry"
@@ -75,6 +75,9 @@ gcloud --quiet compute firewall-rules delete "$network-allow-prom-alertm-cadviso
 
 echo "deleting firewall rule (allow:prom-alertm-cadvisor-edge).."
 gcloud --quiet compute firewall-rules delete "$network-allow-prom-alertm-cadvisor-edge" 
+
+echo "deleting firewall rule (allow:kafkahq).."
+gcloud --quiet compute firewall-rules delete "$network-allow-kafkahq"
 
 echo "deleting NAT router.."
 gcloud --quiet compute routers nats delete "$network-nat-config" --router "$network-nat-router"

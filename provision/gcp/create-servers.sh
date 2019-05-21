@@ -172,12 +172,12 @@ gcloud compute firewall-rules create "$network-allow-kafka-zookeeper" \
 --target-tags="worker" \
 --allow tcp:2181,tcp:9580,tcp:9092,tcp:9581
 
-echo "creating firewall rule (allow:kafka-zookeeper-edge).."
-gcloud compute firewall-rules create "$network-allow-kafka-zookeeper-edge" \
+echo "creating firewall rule (allow:kafka-zookeeper-schema-edge).."
+gcloud compute firewall-rules create "$network-allow-kafka-zookeeper-schema-edge" \
 --network "$network" \
 --source-ranges="$ip_vpn_internal,$ip_range" \
 --target-tags="worker,bastion" \
---allow tcp:2171,tcp:9575,tcp:9082,tcp:9571
+--allow tcp:2171,tcp:9575,tcp:9082,tcp:9571,tcp:8071
 
 echo "creating firewall rule (allow:kafka-schema-registry).."
 gcloud compute firewall-rules create "$network-allow-kafka-schema-registry" \
@@ -246,6 +246,11 @@ gcloud compute firewall-rules create "$network-allow-prom-alertm-cadvisor-edge" 
 --target-tags="worker,bastion" \
 --allow tcp:9091,tcp:9093,tcp:9094,tcp:8090
 
+echo "creating firewall rule (allow:kafkahq).."
+gcloud compute firewall-rules create "$network-allow-kafkahq" \
+--network "$network" \
+--target-tags="worker" \
+--allow tcp:7080
 
 echo "creating route to VPN internal hosts.."
 gcloud compute routes create "$network-route-to-vpn-internal-hosts" \

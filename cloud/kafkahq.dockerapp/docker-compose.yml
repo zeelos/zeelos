@@ -1,0 +1,90 @@
+# zeelos - cloud
+# MAINTAINER zeelos.io - https://zeelos.io
+
+version: '3.6'
+
+services:
+   kafkahq:
+    image: tchiotludo/kafkahq:0.7.2
+    environment:
+      JAVA_OPTS: -Djava.awt.headless=true
+                 -Djavax.net.ssl.trustStore=/app/kafka.client-cloud.truststore.jks
+                 -Djavax.net.ssl.trustStorePassword=${ssl.truststorepass}
+                 -Djavax.net.ssl.keyStore=/app/kafka.client-cloud.keystore.jks
+                 -Djavax.net.ssl.keyStorePassword=${ssl.keystorepass}
+      KAFKAHQ_CONFIGURATION: |
+        kafkahq:
+          connections:
+            cloud:
+              properties:
+                bootstrap.servers: "kafka-cloud-1:9092,kafka-cloud-2:9092,kafka-cloud-3:9092"
+                security.protocol: SSL
+                ssl.keystore.location: /app/kafka.client-cloud.keystore.jks
+                ssl.keystore.password: ${ssl.keystorepass}
+                ssl.key.password: ${ssl.keystorepass}
+                ssl.truststore.location: /app/kafka.client-cloud.truststore.jks
+                ssl.truststore.password: {ssl.truststorepass}
+                ssl.endpoint.identification.algorithm: ""
+              schema-registry:
+                url: "https://schema-registry-cloud:8081"
+                ssl.trust-store: /app/kafka.client-cloud.truststore.jks
+                ssl.trust-store-password: {ssl.truststorepass}
+                ssl.key-store: /app/kafka.client-cloud.keystore.jks
+                ssl.key-store-password: ${ssl.keystorepass}
+            upboard:
+              properties:
+                bootstrap.servers: "kafka-upboard-edge:9082"
+                security.protocol: SSL
+                ssl.keystore.location: /app/kafka.client-edge.keystore.jks
+                ssl.keystore.password: ${ssl.keystorepass}
+                ssl.key.password: ${ssl.keystorepass}
+                ssl.truststore.location: /app/kafka.client-edge.truststore.jks
+                ssl.truststore.password: {ssl.truststorepass}
+                ssl.endpoint.identification.algorithm: ""
+            rock64:
+              properties:
+                bootstrap.servers: "kafka-rock64-edge:9082"
+                security.protocol: SSL
+                ssl.keystore.location: /app/kafka.client-edge.keystore.jks
+                ssl.keystore.password: ${ssl.keystorepass}
+                ssl.key.password: ${ssl.keystorepass}
+                ssl.truststore.location: /app/kafka.client-edge.truststore.jks
+                ssl.truststore.password: {ssl.truststorepass}
+                ssl.endpoint.identification.algorithm: ""
+    secrets:
+      - source: kafka.client-cloud.keystore.jks
+        target: /app/kafka.client-cloud.keystore.jks
+      - source: kafka.client-cloud.truststore.jks
+        target: /app/kafka.client-cloud.truststore.jks
+      - source: kafka.client-edge.keystore.jks
+        target: /app/kafka.client-edge.keystore.jks
+      - source: kafka.client-edge.truststore.jks
+        target: /app/kafka.client-edge.truststore.jks
+    networks:
+      - monnet
+    ports:
+      - published: 7080
+        target: 8080
+        mode: host
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == ${project.name}-${project.region}-${project.zone}-swarm-worker-5
+    labels:
+      io.zeelos.app: ${project.name}
+      io.zeelos.role: "Kafka GUI for topics, topics data, consumers group, schema registry, connect and more"
+    
+secrets:
+  kafka.client-cloud.keystore.jks:
+    file: ../security/kafka.client-cloud.keystore.jks
+  kafka.client-cloud.truststore.jks:
+    file: ../security/kafka.client-cloud.truststore.jks
+  kafka.client-edge.keystore.jks:
+    file: ../security/kafka.client-edge.keystore.jks
+  kafka.client-edge.truststore.jks:
+    file: ../security/kafka.client-edge.truststore.jks
+
+networks:
+  monnet:
+    external: true
+    name: monnet

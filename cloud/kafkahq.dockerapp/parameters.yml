@@ -1,0 +1,11 @@
+project: 
+    name: zeelos-io-241010
+    region: europe-west3
+    zone: a
+
+ssl:
+  truststorepass: itsasecret
+  keystorepass: itsasecret
+  keypass: itsasecret
+
+kafkahq:
