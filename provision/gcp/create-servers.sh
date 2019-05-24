@@ -77,7 +77,7 @@ for id in $(seq 1 $managers); do
     gcloud compute addresses create "$network-swarm-manager-ip-$id" \
     --subnet "$ip_subnet" \
     --region "$region"
-    
+
     echo "creating manager '$network-swarm-manager-$id'.."
     gcloud compute instances create "$network-swarm-manager-$id" \
     --image "$image" \
@@ -101,7 +101,7 @@ for id in $(seq 1 $workers); do
     gcloud compute addresses create "$network-swarm-worker-ip-$id" \
     --subnet "$ip_subnet" \
     --region "$region"
-    
+
     echo "creating worker '$network-swarm-worker-$id'.."
     gcloud compute instances create "$network-swarm-worker-$id" \
     --image "$image" \
@@ -172,8 +172,8 @@ gcloud compute firewall-rules create "$network-allow-kafka-zookeeper" \
 --target-tags="worker" \
 --allow tcp:2181,tcp:9580,tcp:9092,tcp:9581
 
-echo "creating firewall rule (allow:kafka-zookeeper-schema-edge).."
-gcloud compute firewall-rules create "$network-allow-kafka-zookeeper-schema-edge" \
+echo "creating firewall rule (allow:kafka-zookeeper-edge).."
+gcloud compute firewall-rules create "$network-allow-kafka-zookeeper-edge" \
 --network "$network" \
 --source-ranges="$ip_vpn_internal,$ip_range" \
 --target-tags="worker,bastion" \
