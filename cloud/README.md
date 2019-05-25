@@ -15,11 +15,17 @@ cd security/
 # start services
 cd cloud/
 docker-app render monitoring | docker stack deploy --compose-file - monitoring
+docker-app deploy monitoring
 docker-app render kafka | docker stack deploy --compose-file - kafka
+docker-app deploy kafka
 docker-app render dbs | docker stack deploy --compose-file - dbs
+docker-app deploy dbs
 docker-app render --set edge.id=upboard connect-clusters | docker stack deploy --compose-file - connect-clusters-upboard
+docker-app deploy --set edge.id=upboard --name connect-clusters-upboard connect-clusters
 docker-app render --set edge.id=rock64 connect-clusters | docker stack deploy --compose-file - connect-clusters-rock64
+docker-app deploy --set edge.id=rock64 --name connect-clusters-rock64 connect-clusters
 docker-app render kafkahq | docker stack deploy --compose-file - kafkahq
+docker stack deploy kafkahq
 
 # create topics
 # Note: configure 'export SCHEMA_REGISTRY_OPTS' as in the case of the native connection to cloud
@@ -127,10 +133,11 @@ cd cloud/
 
 # upboard
 docker-app render --set edge.id=upboard mirrormaker | docker stack deploy --compose-file - mirrormaker-upboard
+docker-app deploy --set edge.id=upboard --name mirrormaker-upboard mirrormaker
 
 # rock64
 docker-app render --set edge.id=rock64 mirrormaker | docker stack deploy --compose-file - mirrormaker-rock64
-
+docker-app deploy --set edge.id=rock64 --name mirrormaker-rock64 mirrormaker
 # deploy connectors
 
 # upboard

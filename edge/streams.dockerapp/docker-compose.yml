@@ -109,17 +109,17 @@ services:
 
 configs:
   kstreams.jmx-exporter-javaagent-jar:
-    file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.11.0.jar
+    file: configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.11.0.jar
   kstreams.jmx-exporter-kstreams-config:
-    file: ../configs/prometheus/exporters/kafka/jmx-exporter-kstreams-config.yml
+    file: configs/prometheus/exporters/kafka/jmx-exporter-kstreams-config.yml
 
 secrets:
   kafka.client-edge.keystore.jks:
-    file: ../security/kafka.client-edge.keystore.jks
+    file: security/kafka.client-edge.keystore.jks
   kafka.client-edge.truststore.jks:
-    file: ../security/kafka.client-edge.truststore.jks
+    file: security/kafka.client-edge.truststore.jks
   client_security_edge.properties:
-    file: ../security/client_security_edge.properties
+    file: security/client_security_edge.properties
 
 volumes:
   kstreams-aggregate-state:

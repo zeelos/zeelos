@@ -11,10 +11,16 @@ cd edge/
 
 # upboard
 docker-app render monitoring | docker stack deploy --compose-file - monitoring
+docker-app deploy monitoring
 docker-app render --set edge.id=upboard kafka | docker stack deploy --compose-file - kafka
-docker-app render --set edge.id=upboard leshan | docker stack deploy --compose-file - leshan-server
+docker-app deploy --set edge.id=upboard kafka
+docker-app render --set edge.id=upboard leshan | docker stack deploy --compose-file - leshan
+docker-app deploy --set edge.id=upboard leshan
+
 docker-app render --set edge.id=upboard mirrormaker | docker stack deploy --compose-file - mirrormaker
+docker-app deploy --set edge.id=upboard mirrormaker
 docker-app render --set edge.id=upboard streams | docker stack deploy --compose-file - streams
+docker-app deploy --set edge.id=upboard streams
 
 
 

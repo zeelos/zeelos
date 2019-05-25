@@ -70,19 +70,19 @@ services:
 
 configs:
   kafka.jmx-exporter-javaagent-jar:
-    file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.11.0.jar
+    file: configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.11.0.jar
   kafka.jmx-exporter-kafka-config:
-    file: ../configs/prometheus/exporters/kafka/jmx-exporter-kafka-config.yml
+    file: configs/prometheus/exporters/kafka/jmx-exporter-kafka-config.yml
 
 secrets:
   kafka.client-edge.keystore.jks:
-    file: ../security/kafka.client-edge.keystore.jks
+    file: security/kafka.client-edge.keystore.jks
   kafka.client-edge.truststore.jks:
-    file: ../security/kafka.client-edge.truststore.jks
+    file: security/kafka.client-edge.truststore.jks
   kafka.client-cloud.keystore.jks:
-    file: ../security/kafka.client-cloud.keystore.jks
+    file: security/kafka.client-cloud.keystore.jks
   kafka.client-cloud.truststore.jks:
-    file: ../security/kafka.client-cloud.truststore.jks
+    file: security/kafka.client-cloud.truststore.jks
 
 networks:
   monnet:

@@ -513,41 +513,41 @@ services:
 
 configs:
   kafka.jmx-exporter-javaagent-jar:
-    file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.11.0.jar
+    file: configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.11.0.jar
   kafka.jmx-exporter-zookeeper-config:
-    file: ../configs/prometheus/exporters/kafka/jmx-exporter-zookeeper-config.yml
+    file: configs/prometheus/exporters/kafka/jmx-exporter-zookeeper-config.yml
   kafka.jmx-exporter-kafka-config:
-    file: ../configs/prometheus/exporters/kafka/jmx-exporter-kafka-config.yml
+    file: configs/prometheus/exporters/kafka/jmx-exporter-kafka-config.yml
 
 secrets:
   kafka.kafka-cloud.keystore.jks:
-    file: ../security/kafka.kafka-cloud.keystore.jks
+    file: security/kafka.kafka-cloud.keystore.jks
   kafka-cloud_keystore_creds:
-    file: ../security/kafka-cloud_keystore_creds
+    file: security/kafka-cloud_keystore_creds
   kafka-cloud_sslkey_creds:
-    file: ../security/kafka-cloud_sslkey_creds
+    file: security/kafka-cloud_sslkey_creds
   kafka.kafka-cloud.truststore.jks:
-    file: ../security/kafka.kafka-cloud.truststore.jks
+    file: security/kafka.kafka-cloud.truststore.jks
   kafka-cloud_truststore_creds:
-    file: ../security/kafka-cloud_truststore_creds
+    file: security/kafka-cloud_truststore_creds
   kafka.schema-registry-cloud.keystore.jks:
-    file: ../security/kafka.schema-registry-cloud.keystore.jks
+    file: security/kafka.schema-registry-cloud.keystore.jks
   kafka.schema-registry-cloud.truststore.jks:
-    file: ../security/kafka.schema-registry-cloud.truststore.jks
+    file: security/kafka.schema-registry-cloud.truststore.jks
   kafka.rest-cloud.keystore.jks:
-    file: ../security/kafka.rest-cloud.keystore.jks
+    file: security/kafka.rest-cloud.keystore.jks
   kafka.rest-cloud.truststore.jks:
-    file: ../security/kafka.rest-cloud.truststore.jks
+    file: security/kafka.rest-cloud.truststore.jks
   kafka.client-cloud.keystore.jks:
-    file: ../security/kafka.client-cloud.keystore.jks
+    file: security/kafka.client-cloud.keystore.jks
   kafka.client-cloud.truststore.jks:
-    file: ../security/kafka.client-cloud.truststore.jks
+    file: security/kafka.client-cloud.truststore.jks
   client_security_cloud.properties:
-    file: ../security/client_security_cloud.properties
+    file: security/client_security_cloud.properties
   client-cloud.certificate.pem:
-    file: ../security/client-cloud.certificate.pem
+    file: security/client-cloud.certificate.pem
   client-cloud.key:
-    file: ../security/client-cloud.key
+    file: security/client-cloud.key
 
 volumes:
   zookeeper-data-1:

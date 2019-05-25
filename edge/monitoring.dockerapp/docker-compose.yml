@@ -139,13 +139,13 @@ services:
 
 configs:
   prometheus_config:
-    file: ../configs/prometheus/conf/config-edge.yml
+    file: configs/prometheus/conf/config-edge.yml
   prometheus_task_rules:
-    file: ../configs/prometheus/rules/swarm_task.rules.yml
+    file: configs/prometheus/rules/swarm_task.rules.yml
   prometheus_node_rules:
-    file: ../configs/prometheus/rules/swarm_node.rules.yml
+    file: configs/prometheus/rules/swarm_node.rules.yml
   alertmanager.config:
-    file: ../configs/alertmanager/config-edge.yml
+    file: configs/alertmanager/config-edge.yml
 
 volumes:  
   prometheus-data:

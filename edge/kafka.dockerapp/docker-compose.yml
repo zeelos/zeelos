@@ -296,47 +296,47 @@ services:
 
 configs:
   kafka.jmx-exporter-javaagent-jar:
-    file: ../configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.11.0.jar
+    file: configs/prometheus/exporters/kafka/jmx_prometheus_javaagent-0.11.0.jar
   kafka.jmx-exporter-zookeeper-config:
-    file: ../configs/prometheus/exporters/kafka/jmx-exporter-zookeeper-config.yml
+    file: configs/prometheus/exporters/kafka/jmx-exporter-zookeeper-config.yml
   kafka.jmx-exporter-kafka-config:
-    file: ../configs/prometheus/exporters/kafka/jmx-exporter-kafka-config.yml
+    file: configs/prometheus/exporters/kafka/jmx-exporter-kafka-config.yml
 
 secrets:
   kafka.kafka-edge.keystore.jks:
-    file: ../security/kafka.kafka-edge.keystore.jks
+    file: security/kafka.kafka-edge.keystore.jks
   kafka-edge_keystore_creds:
-    file: ../security/kafka-edge_keystore_creds
+    file: security/kafka-edge_keystore_creds
   kafka-edge_sslkey_creds:
-    file: ../security/kafka-edge_sslkey_creds
+    file: security/kafka-edge_sslkey_creds
   kafka.kafka-edge.truststore.jks:
-    file: ../security/kafka.kafka-edge.truststore.jks
+    file: security/kafka.kafka-edge.truststore.jks
   kafka-edge_truststore_creds:
-    file: ../security/kafka-edge_truststore_creds
+    file: security/kafka-edge_truststore_creds
   kafka.schema-registry-edge.keystore.jks:
-    file: ../security/kafka.schema-registry-edge.keystore.jks
+    file: security/kafka.schema-registry-edge.keystore.jks
   kafka.schema-registry-edge.truststore.jks:
-    file: ../security/kafka.schema-registry-edge.truststore.jks
+    file: security/kafka.schema-registry-edge.truststore.jks
   kafka.rest-edge.keystore.jks:
-    file: ../security/kafka.rest-edge.keystore.jks
+    file: security/kafka.rest-edge.keystore.jks
   kafka.rest-edge.truststore.jks:
-    file: ../security/kafka.rest-edge.truststore.jks
+    file: security/kafka.rest-edge.truststore.jks
   kafka.client-edge.keystore.jks:
-    file: ../security/kafka.client-edge.keystore.jks
+    file: security/kafka.client-edge.keystore.jks
   kafka.client-edge.truststore.jks:
-    file: ../security/kafka.client-edge.truststore.jks
+    file: security/kafka.client-edge.truststore.jks
   kafka.client-cloud.keystore.jks:
-    file: ../security/kafka.client-cloud.keystore.jks
+    file: security/kafka.client-cloud.keystore.jks
   kafka.client-cloud.truststore.jks:
-    file: ../security/kafka.client-cloud.truststore.jks
+    file: security/kafka.client-cloud.truststore.jks
   client_security_edge.properties:
-    file: ../security/client_security_edge.properties
+    file: security/client_security_edge.properties
   client_security_cloud.properties:
-    file: ../security/client_security_cloud.properties
+    file: security/client_security_cloud.properties
   client-edge.certificate.pem:
-    file: ../security/client-edge.certificate.pem
+    file: security/client-edge.certificate.pem
   client-edge.key:
-    file: ../security/client-edge.key
+    file: security/client-edge.key
 
 volumes:
   zookeeper-data:

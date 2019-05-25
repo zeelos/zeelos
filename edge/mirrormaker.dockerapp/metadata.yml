@@ -1,7 +1,7 @@
 # Version of the application
 version: 0.1.0
 # Name of the application
-name: gateway
+name: mirrormaker
 # A short description of the application
 description: Gateway Stack
 # Namespace to use when pushing to a registry. This is typically your Hub username.
