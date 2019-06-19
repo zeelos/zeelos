@@ -174,10 +174,6 @@ curl -X DELETE -k https://connect-cloud:8084/connectors/_leshan_asset_sink
 ## useful kafka administration tools
 #
 
-## configs
-kafka-configs --bootstrap-server kafka-cloud-1:9092 --zookeeper zookeeper-cloud-1:2181 --describe --entity-type topics --entity-name iot.upboard.observations
-
-
 ## list topics
 kafka-topics --bootstrap-server kafka-cloud-1:9092 --list --command-config /Users/cvasilak/Projects/RealRed/projects/zeelos/leshan/client_security_cloud.properties
 
