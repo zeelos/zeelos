@@ -5,7 +5,7 @@ version: '3.6'
 
 services:
   zookeeper-edge:
-    image: images.zeelos.io/library/cp-zookeeper:5.2.1
+    image: zeelos/cp-zookeeper:5.2.2
     volumes:
       - zookeeper-data:/var/lib/zookeeper/data
       - zookeeper-log:/var/lib/zookeeper/log
@@ -46,7 +46,7 @@ services:
       io.zeelos.edgeId: ${edge.id}
 
   kafka-edge:
-    image: images.zeelos.io/library/cp-kafka:5.2.1
+    image: zeelos/cp-kafka:5.2.2
     volumes:
       - kafka-data:/var/lib/kafka/data
     environment:
@@ -115,7 +115,7 @@ services:
       io.zeelos.edgeId: ${edge.id}
 
   schema-registry-edge:
-    image: images.zeelos.io/library/cp-schema-registry:5.2.1
+    image: zeelos/cp-schema-registry:5.2.2
     environment:
       - SCHEMA_REGISTRY_HOST_NAME=schema-registry-${edge.id}-edge
       - SCHEMA_REGISTRY_LISTENERS=https://0.0.0.0:8071
@@ -178,7 +178,7 @@ services:
       io.zeelos.edgeId: ${edge.id}
 
   rest-edge:
-    image: images.zeelos.io/library/cp-kafka-rest:5.2.1
+    image: zeelos/cp-kafka-rest:5.2.2
     environment:
       - KAFKA_REST_HOST_NAME=rest-${edge.id}-edge
       - KAFKA_REST_LISTENERS=https://0.0.0.0:8072
@@ -240,7 +240,7 @@ services:
       io.zeelos.edgeId: ${edge.id}
 
   kafka-command-client:
-    image: images.zeelos.io/library/cp-kafka-connect-base:5.2.1
+    image: zeelos/cp-kafka-connect-base:5.2.2
     environment:
       - edge_ID=${edge.id}
       - SCHEMA_REGISTRY_OPTS=-Djavax.net.ssl.trustStore=/etc/kafka/secrets/kafka.client-edge.truststore.jks
@@ -269,7 +269,7 @@ services:
       io.zeelos.edgeId: ${edge.id}
 
   kafka-exporter-edge:
-    image: images.zeelos.io/library/kafka_exporter:v1.2.0
+    image: zeelos/kafka_exporter:v1.2.0
     secrets:
       - source: client-edge.certificate.pem
         target: /etc/kafka/secrets/client-edge.certificate.pem
