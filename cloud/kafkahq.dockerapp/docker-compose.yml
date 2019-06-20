@@ -5,7 +5,7 @@ version: '3.6'
 
 services:
    kafkahq:
-    image: tchiotludo/kafkahq:0.7.2
+    image: tchiotludo/kafkahq:0.8.0
     environment:
       JAVA_OPTS: -Djava.awt.headless=true
                  -Djavax.net.ssl.trustStore=/app/kafka.client-cloud.truststore.jks

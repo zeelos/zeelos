@@ -5,7 +5,7 @@ version: '3.6'
 
 services:
   zookeeper-cloud-1:
-    image: images.zeelos.io/library/cp-zookeeper:5.2.1
+    image: zeelos/cp-zookeeper:5.2.2
     volumes:
       - zookeeper-data-1:/var/lib/zookeeper/data
       - zookeeper-log-1:/var/lib/zookeeper/log
@@ -48,7 +48,7 @@ services:
       io.zeelos.role: "ZooKeeper - An open-source server which enables highly reliable distributed coordination"
 
   zookeeper-cloud-2:
-    image: images.zeelos.io/library/cp-zookeeper:5.2.1
+    image: zeelos/cp-zookeeper:5.2.2
     volumes:
       - zookeeper-data-2:/var/lib/zookeeper/data
       - zookeeper-log-2:/var/lib/zookeeper/log
@@ -91,7 +91,7 @@ services:
       io.zeelos.role: "ZooKeeper - An open-source server which enables highly reliable distributed coordination"
 
   zookeeper-cloud-3:
-    image: images.zeelos.io/library/cp-zookeeper:5.2.1
+    image: zeelos/cp-zookeeper:5.2.2
     volumes:
       - zookeeper-data-3:/var/lib/zookeeper/data
       - zookeeper-log-3:/var/lib/zookeeper/log
@@ -134,7 +134,7 @@ services:
       io.zeelos.role: "ZooKeeper - An open-source server which enables highly reliable distributed coordination"
 
   kafka-cloud-1:
-    image: images.zeelos.io/library/cp-kafka:5.2.1
+    image: zeelos/cp-kafka:5.2.2
     volumes:
       - kafka-data-1:/var/lib/kafka/data
     environment:
@@ -203,7 +203,7 @@ services:
       io.zeelos.role: "Kafka - A distributed streaming platform"
 
   kafka-cloud-2:
-    image: images.zeelos.io/library/cp-kafka:5.2.1
+    image: zeelos/cp-kafka:5.2.2
     volumes:
       - kafka-data-2:/var/lib/kafka/data
     environment:
@@ -272,7 +272,7 @@ services:
       io.zeelos.role: "Kafka - A distributed streaming platform"
 
   kafka-cloud-3:
-    image: images.zeelos.io/library/cp-kafka:5.2.1
+    image: zeelos/cp-kafka:5.2.2
     volumes:
       - kafka-data-3:/var/lib/kafka/data
     environment:
@@ -341,7 +341,7 @@ services:
       io.zeelos.role: "Kafka - A distributed streaming platform"
 
   schema-registry-cloud:
-    image: images.zeelos.io/library/cp-schema-registry:5.2.1
+    image: zeelos/cp-schema-registry:5.2.2
     environment:
       - SCHEMA_REGISTRY_HOST_NAME=schema-registry-cloud
       - SCHEMA_REGISTRY_LISTENERS=https://0.0.0.0:8081
@@ -401,7 +401,7 @@ services:
       io.zeelos.role: "Schema Registry - Schema registry for Apache Kafka"
 
   rest-cloud:
-    image: images.zeelos.io/library/cp-kafka-rest:5.2.1
+    image: zeelos/cp-kafka-rest:5.2.2
     environment:
       - KAFKA_REST_HOST_NAME=rest-cloud
       - KAFKA_REST_LISTENERS=https://0.0.0.0:8082
@@ -460,7 +460,7 @@ services:
       io.zeelos.role: "Kafka REST Proxy - A RESTful interface to a Kafka cluster"
 
   kafka-command-client:
-    image: images.zeelos.io/library/cp-kafka-connect-base:5.2.1
+    image: zeelos/cp-kafka-connect-base:5.2.2
     environment:
       - SCHEMA_REGISTRY_OPTS=-Djavax.net.ssl.trustStore=/etc/kafka/secrets/kafka.client-cloud.truststore.jks
                              -Djavax.net.ssl.trustStorePassword=${ssl.truststorepass}
@@ -485,7 +485,7 @@ services:
       io.zeelos.role: "Kafka Command Client - An entry-point to issue commands against the Kafka Cloud Cluster"
 
   kafka-exporter-cloud:
-    image: images.zeelos.io/library/kafka_exporter:v1.2.0
+    image: zeelos/kafka_exporter:v1.2.0
     secrets:
       - source: client-cloud.certificate.pem
         target: /etc/kafka/secrets/client-cloud.certificate.pem

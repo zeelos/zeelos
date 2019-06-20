@@ -38,7 +38,7 @@ services:
           - node.role == manager
 
   prometheus:
-    image: prom/prometheus:master
+    image: prom/prometheus:2.10.0
     volumes:
       - prometheus-data:/prometheus
     command:
@@ -69,7 +69,7 @@ services:
       io.zeelos.role: "Prometheus - From metrics to insight, Power your metrics and alerting with a leading open-source monitoring solution"
 
   alertmanager:
-    image: prom/alertmanager:master
+    image: prom/alertmanager:v0.17.0
     volumes:
       - alertmanager-data:/alertmanager
     networks:
@@ -93,7 +93,7 @@ services:
       io.zeelos.role: "alertmanager - The Alertmanager handles alerts sent by client applications such as the Prometheus server"
 
   cadvisor:
-    image: images.zeelos.io/library/cadvisor:v0.33.1
+    image: zeelos/cadvisor:v0.33.1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock,readonly
       - /:/rootfs
@@ -114,7 +114,7 @@ services:
       io.zeelos.role: "cAdvisor - Analyzes resource usage and performance characteristics of running containers"
 
   node-exporter:
-    image: images.zeelos.io/library/node_exporter:v0.17.0
+    image: zeelos/node_exporter:v0.18.1
     environment:
       - NODE_ID={{.Node.ID}}
     networks:
@@ -137,7 +137,7 @@ services:
       io.zeelos.role: "node-exporter - Exporter for machine metrics"
 
   docker-exporter:
-    image: images.zeelos.io/library/docker_exporter:1.7.3.1
+    image: zeelos/docker_exporter:1.7.3.1
     environment:
       - IN=172.17.0.1:9323
       - OUT=9323
