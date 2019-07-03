@@ -2,7 +2,7 @@
 # set -x
 
 # the project id
-project="zeelos-io-241010"
+project="phrasal-clover-243814"
 
 # Google GCP region/zone
 region="europe-west3"

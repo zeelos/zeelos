@@ -2,7 +2,7 @@
 gcloud auth login
 
 # set current project-id
-gcloud config set project zeelos-io-241010
+gcloud config set project phrasal-clover-243814
 
 # set compute zone
 gcloud config set compute/zone europe-west3

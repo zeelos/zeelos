@@ -38,7 +38,7 @@ services:
           - node.role == manager
 
   prometheus:
-    image: prom/prometheus:2.10.0
+    image: prom/prometheus:v2.10.0
     volumes:
       - prometheus-data:/prometheus
     command:

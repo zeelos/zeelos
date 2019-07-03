@@ -27,6 +27,9 @@ https://docs.docker.com/install/linux/docker-ce/debian/
 # install docker-app
 https://github.com/docker/app
 
+# install completion script
+docker-app completion bash > /etc/bash_completion.d/docker-app
+
 # append 'experimental' settings in '/etc/docker/daemon.json'
 {
    "experimental": true,
@@ -46,9 +49,10 @@ wget -qO- http://www-us.apache.org/dist/maven/maven-3/3.5.4/binaries/apache-mave
 
 # update envs
 /etc/bash.bashrc 
-   export MAVEN_HOME=/opt/apache-maven-3.5.4
-   export PATH=$PATH:$MAVEN_HOME/bin
-
+export MAVEN_HOME=/opt/apache-maven-3.5.4
+export PATH=$PATH:$MAVEN_HOME/bin
+# handy alias
+alias dk='docker'
 
 # for each host add dnsmsaq entry '/etc/resolv.conf'
 nameserver 10.180.0.2
@@ -178,16 +182,9 @@ systemctl enable --now dnsmasq
 
 
 
-
 # useful cmd's
 ./exec-cmd.sh "sudo apt-get update; sudo apt-get upgrade -y"
-
-# install handy alias
-/etc/bash.bashrc
-   alias dk='docker'
-# install completion script
-source <(docker-app completion bash) > /etc/bash_completion.d/docker-app
-
+  
 # harbor self-signed certificate
 openssl genrsa -out ca.key 4096
 openssl req -x509 -new -nodes -sha512 -days 3650 \

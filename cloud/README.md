@@ -5,11 +5,7 @@
 docker network create --driver overlay monnet
 docker network create --driver overlay cloudnet
 
-# create certificates
-cd security/
-./certs-create.sh
-
-# update paramaters.yml on docker-apps with the correct 'project id'
+# update parameters.yml on docker-apps with the correct 'project id'
 
 
 # start services
@@ -25,7 +21,7 @@ docker-app deploy --set edge.id=upboard --name connect-clusters-upboard connect-
 docker-app render --set edge.id=rock64 connect-clusters | docker stack deploy --compose-file - connect-clusters-rock64
 docker-app deploy --set edge.id=rock64 --name connect-clusters-rock64 connect-clusters
 docker-app render kafkahq | docker stack deploy --compose-file - kafkahq
-docker stack deploy kafkahq
+docker-app deploy kafkahq
 
 # create topics
 # Note: configure 'export SCHEMA_REGISTRY_OPTS' as in the case of the native connection to cloud
@@ -222,12 +218,12 @@ kafka-run-class kafka.tools.DumpLogSegments --files /var/lib/kafka/data/<topic-p
 
 ## virtual sensor
 # upboard
-docker run -it --rm --name virtual-sensor-upboard -e JAVA_OPTS="-Xmx32M -Xms32M" images.zeelos.io/library/leshan-client-demo:0.7-SNAPSHOT -u upboard-gateway.entrydns.org
+docker run -it --rm --name virtual-sensor-upboard -e JAVA_OPTS="-Xmx32M -Xms32M" zeelos/leshan-client-demo:0.8-SNAPSHOT -u upboard
 # rock64
-docker run -it --rm --name virtual-sensor-rock64 -e JAVA_OPTS="-Xmx32M -Xms32M" images.zeelos.io/library/leshan-client-demo:0.7-SNAPSHOT -u rock64-gateway.entrydns.org
+docker run -it --rm --name virtual-sensor-rock64 -e JAVA_OPTS="-Xmx32M -Xms32M" zeelos/leshan-client-demo:0.8-SNAPSHOT -u rock64-gateway.entrydns.org
 
 ## jmeter
 # upboard
-docker run -it --rm --name jmeter-upboard images.zeelos.io/library/jmeter-leshan:0.0.1-SNAPSHOT -n -t /opt/jmeter/tests/leshan.jmx -JserverHost=upboard-gateway.entrydns.org -JserverPort=5683 -JrestPort=80 -Jthreads=10 -JthreadsRampUp=3 -JthreadsLoopCount=100 -JthreadDelayObserveSend=30000
+docker run -it --rm --name jmeter-upboard zeelos/jmeter-leshan:0.0.1-SNAPSHOT -n -t /opt/jmeter/tests/leshan.jmx -JserverHost=192.168.1.10 -JserverPort=5683 -JrestPort=80 -Jthreads=100 -JthreadsRampUp=3 -JthreadsLoopCount=9999 -JthreadDelayObserveSend=30000
 # rock64
-docker run -it --rm --name jmeter-rock64 images.zeelos.io/library/jmeter-leshan:0.0.1-SNAPSHOT -n -t /opt/jmeter/tests/leshan.jmx -JserverHost=rock64-gateway.entrydns.org -JserverPort=5683 -JrestPort=80 -Jthreads=10 -JthreadsRampUp=3 -JthreadsLoopCount=100 -JthreadDelayObserveSend=30000
+docker run -it --rm -t JAVA_OPTS="-Xms128m -Xmx128m" --name jmeter-rock64 zeelos/jmeter-leshan:0.0.1-SNAPSHOT -n -t /opt/jmeter/tests/leshan.jmx -JserverHost=192.168.1.11 -JserverPort=5683 -JrestPort=80 -Jthreads=50 -JthreadsRampUp=3 -JthreadsLoopCount=9999 -JthreadDelayObserveSend=30000

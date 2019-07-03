@@ -2,8 +2,8 @@
 # set -x
 
 # project details
-project="zeelos-io-241010"
-user=""
+project="phrasal-clover-243814"
+user="zeelos_dev_5_gmail_com"
 
 # Google GCP region/zone
 region="europe-west3"
